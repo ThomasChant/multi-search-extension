@@ -10,11 +10,5 @@
   ],
   "action": {
     "default_popup": "popup.html"
-  },
-  "omnibox": {
-    "keyword": "ms"
-  },
-  "background": {
-    "service_worker": "background.js"
   }
 } 
