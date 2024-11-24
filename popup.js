@@ -41,22 +41,10 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false) 
   const div = document.createElement('div');
   div.className = 'engine-item';
   
-  // 定义通用的名称框样式
-  const nameBoxStyle = `
-    width: 120px;
-    height: 32px;
-    padding: 0 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-size: 14px;
-  `;
-  
   if (isCustom) {
     // 自定义搜索引擎的HTML结构
     div.innerHTML = `
       <input type="text" class="engine-name" 
-        style="${nameBoxStyle}"
         placeholder="搜索引擎名称" 
         value="${name}">
       <input type="text" class="engine-url" 
@@ -70,13 +58,7 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false) 
   } else {
     // 预设搜索引擎的HTML结构
     div.innerHTML = `
-      <div class="engine-name" 
-        style="${nameBoxStyle}
-               background: #f5f5f5;
-               line-height: 32px;
-               overflow: hidden;
-               text-overflow: ellipsis;
-               white-space: nowrap;">${name}</div>
+      <div class="engine-name">${name}</div>
       <input type="text" class="engine-url" 
         placeholder="搜索URL (%s代表搜索词)" 
         value="${url}">
@@ -128,7 +110,28 @@ function loadEngines() {
   });
 }
 
-// 保存配置
+// 添加显示提示的函数
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = `toast ${type}`;
+  toast.style.display = 'block';
+  
+  // 重置可能的淡出动画
+  toast.style.animation = 'slideIn 0.3s ease-out';
+  
+  // 2秒后开始淡出
+  setTimeout(() => {
+    toast.style.animation = 'fadeOut 0.3s ease-out';
+    
+    // 动画结束后隐藏
+    setTimeout(() => {
+      toast.style.display = 'none';
+    }, 300);
+  }, 2000);
+}
+
+// 修改保存配置的函数
 function saveEngines() {
   const engines = {};
   
@@ -155,7 +158,7 @@ function saveEngines() {
   
   console.log('Saving engines:', engines);
   chrome.storage.sync.set({ searchEngines: engines }, () => {
-    alert('设置已保存！');
+    showToast('设置已保存！');
   });
 }
 
