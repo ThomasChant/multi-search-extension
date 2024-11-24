@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <style>
     body { 
       width: 500px; 
@@ -22,7 +23,7 @@
       align-items: center;
     }
     .engine-name {
-      width: 120px !important;
+      width: 100px !important;
       height: 32px !important;
       padding: 0 8px !important;
       border: 1px solid #ddd !important;
@@ -47,7 +48,7 @@
       box-sizing: border-box;
     }
     .engine-timeout {
-      width: 100px;
+      width: 80px;
       height: 32px;
       padding: 0 8px;
       border: 1px solid #ddd;
@@ -223,9 +224,9 @@
     .switch {
       position: relative;
       display: inline-block;
-      width: 40px;
-      height: 20px;
-      margin: 0 8px;
+      width: 36px;
+      height: 18px;
+      margin: 0 4px;
     }
 
     .switch input {
@@ -243,14 +244,14 @@
       bottom: 0;
       background-color: #ccc;
       transition: .4s;
-      border-radius: 20px;
+      border-radius: 18px;
     }
 
     .slider:before {
       position: absolute;
       content: "";
-      height: 16px;
-      width: 16px;
+      height: 14px;
+      width: 14px;
       left: 2px;
       bottom: 2px;
       background-color: white;
@@ -263,7 +264,7 @@
     }
 
     input:checked + .slider:before {
-      transform: translateX(20px);
+      transform: translateX(18px);
     }
 
     .engine-item.disabled {
@@ -273,6 +274,29 @@
     .engine-item.disabled input {
       pointer-events: none;
       background-color: #f5f5f5;
+    }
+
+    /* 删除按钮样式 */
+    .btn-delete {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      color: #dc3545;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-delete:hover {
+      background: rgba(220, 53, 69, 0.1);
+    }
+
+    .btn-delete i {
+      font-size: 18px;
     }
   </style>
 </head>

@@ -59,10 +59,12 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, 
         placeholder="搜索URL (%s代表搜索词)" 
         value="${url}">
       <input type="number" class="engine-timeout" 
-        placeholder="超时(毫秒)" 
+        placeholder="超时" 
         value="${timeout}">
       ${switchHtml}
-      <button class="btn btn-danger">删除</button>
+      <button class="btn-delete" title="删除">
+        <i class="bi bi-trash"></i>
+      </button>
     `;
   } else {
     // 预设搜索引擎的HTML结构
@@ -72,10 +74,12 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, 
         placeholder="搜索URL (%s代表搜索词)" 
         value="${url}">
       <input type="number" class="engine-timeout" 
-        placeholder="超时(毫秒)" 
+        placeholder="超时" 
         value="${timeout}">
       ${switchHtml}
-      <button class="btn btn-danger">删除</button>
+      <button class="btn-delete" title="删除">
+        <i class="bi bi-trash"></i>
+      </button>
     `;
   }
   
@@ -86,7 +90,7 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, 
   });
   
   // 添加删除按钮事件
-  div.querySelector('.btn-danger').addEventListener('click', () => {
+  div.querySelector('.btn-delete').addEventListener('click', () => {
     div.remove();
   });
   
