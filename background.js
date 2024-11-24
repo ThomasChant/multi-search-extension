@@ -28,38 +28,33 @@ chrome.runtime.onInstalled.addListener(() => {
 chrome.omnibox.onInputEntered.addListener((text) => {
   console.log('Search text:', text);
   
-  // 获取搜索引擎配置
   chrome.storage.sync.get('searchEngines', (data) => {
     console.log('Got stored engines:', data);
     
-    // 使用存储的配置，如果没有则使用默认配置
     const engines = data.searchEngines || defaultEngines;
-    console.log('Using engines:', engines);
     
-    // 为每个搜索引擎创建标签页
+    // 只使用启用的搜索引擎
     Object.entries(engines).forEach(([name, engineData]) => {
-      console.log(`Creating search tab for ${name}:`, engineData);
-      
-      // 构建搜索URL
-      const searchUrl = engineData.url.replace('%s', encodeURIComponent(text));
-      console.log(`${name} search URL:`, searchUrl);
-      
-      // 创建标签页
-      chrome.tabs.create({ url: searchUrl }, (tab) => {
-        console.log(`Created tab for ${name}:`, tab.id);
+      if (engineData.enabled !== false) {  // 如果搜索引擎未被禁用
+        console.log(`Creating search tab for ${name}:`, engineData);
         
-        // 设置超时检查
-        if (engineData.timeout > 0) {
-          setTimeout(() => {
-            chrome.tabs.get(tab.id, (tabInfo) => {
-              if (tabInfo && tabInfo.status === 'loading') {
-                chrome.tabs.remove(tab.id);
-                console.log(`Closed slow loading tab for ${name}`);
-              }
-            });
-          }, engineData.timeout);
-        }
-      });
+        const searchUrl = engineData.url.replace('%s', encodeURIComponent(text));
+        
+        chrome.tabs.create({ url: searchUrl }, (tab) => {
+          console.log(`Created tab for ${name}:`, tab.id);
+          
+          if (engineData.timeout > 0) {
+            setTimeout(() => {
+              chrome.tabs.get(tab.id, (tabInfo) => {
+                if (tabInfo && tabInfo.status === 'loading') {
+                  chrome.tabs.remove(tab.id);
+                  console.log(`Closed slow loading tab for ${name}`);
+                }
+              });
+            }, engineData.timeout);
+          }
+        });
+      }
     });
   });
 });

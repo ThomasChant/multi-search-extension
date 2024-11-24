@@ -36,10 +36,18 @@ function handleEngineSelect(select, urlInput, timeoutInput) {
 }
 
 // 添加搜索引擎输入框
-function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false) {
+function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, enabled = true) {
   const container = document.getElementById('engineList');
   const div = document.createElement('div');
-  div.className = 'engine-item';
+  div.className = `engine-item${enabled ? '' : ' disabled'}`;
+  
+  // 创建开关按钮的HTML
+  const switchHtml = `
+    <label class="switch">
+      <input type="checkbox" class="engine-enabled" ${enabled ? 'checked' : ''}>
+      <span class="slider"></span>
+    </label>
+  `;
   
   if (isCustom) {
     // 自定义搜索引擎的HTML结构
@@ -53,6 +61,7 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false) 
       <input type="number" class="engine-timeout" 
         placeholder="超时(毫秒)" 
         value="${timeout}">
+      ${switchHtml}
       <button class="btn btn-danger">删除</button>
     `;
   } else {
@@ -65,9 +74,16 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false) 
       <input type="number" class="engine-timeout" 
         placeholder="超时(毫秒)" 
         value="${timeout}">
+      ${switchHtml}
       <button class="btn btn-danger">删除</button>
     `;
   }
+  
+  // 添加开关事件监听
+  const enabledSwitch = div.querySelector('.engine-enabled');
+  enabledSwitch.addEventListener('change', () => {
+    div.classList.toggle('disabled', !enabledSwitch.checked);
+  });
   
   // 添加删除按钮事件
   div.querySelector('.btn-danger').addEventListener('click', () => {
@@ -92,7 +108,8 @@ function loadEngines() {
         name,
         engineData.url,
         engineData.timeout,
-        false  // 预设搜索引擎
+        false,  // 预设搜索引擎
+        engineData.enabled !== false  // 默认启用
       );
     });
     
@@ -103,7 +120,8 @@ function loadEngines() {
           name,
           engineData.url,
           engineData.timeout,
-          true  // 自定义搜索引擎
+          true,  // 自定义搜索引擎
+          engineData.enabled !== false  // 默认启用
         );
       }
     });
@@ -135,11 +153,11 @@ function showToast(message, type = 'success') {
 function saveEngines() {
   const engines = {};
   
-  // 保存所有搜索引擎配置
   document.querySelectorAll('.engine-item').forEach(item => {
     const nameElement = item.querySelector('.engine-name');
     const url = item.querySelector('.engine-url').value;
     const timeout = parseInt(item.querySelector('.engine-timeout').value) || 10000;
+    const enabled = item.querySelector('.engine-enabled').checked;
     
     // 获取引擎名称
     let name;
@@ -152,7 +170,7 @@ function saveEngines() {
     }
     
     if (name && url) {
-      engines[name] = { url, timeout };
+      engines[name] = { url, timeout, enabled };
     }
   });
   
