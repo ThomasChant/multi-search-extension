@@ -9,6 +9,14 @@ const defaultEngines = {
   "百度": {
     url: "https://www.baidu.com/s?wd=%s",
     timeout: 10000
+  },
+  "必应": {
+    url: "https://www.bing.com/search?q=%s",
+    timeout: 10000
+  },
+  "搜狗": {
+    url: "https://www.sogou.com/web?query=%s",
+    timeout: 10000
   }
 };
 
@@ -35,14 +43,18 @@ function addEngineInput(name = '', url = '', timeout = 10000) {
   const div = document.createElement('div');
   div.className = 'engine-item';
   
+  // 生成所有默认搜索引擎的选项
+  const selectOptions = Object.keys(defaultEngines)
+    .map(engineName => `<option value="${engineName}" ${engineName === name ? 'selected' : ''}>${engineName}</option>`)
+    .join('');
+    
   div.innerHTML = `
     <select class="engine-name">
       <option value="">选择搜索引擎</option>
-      <option value="Google" ${name === 'Google' ? 'selected' : ''}>Google</option>
-      <option value="百度" ${name === '百度' ? 'selected' : ''}>百度</option>
+      ${selectOptions}
       <option value="custom">自定义</option>
     </select>
-    <input type="text" class="engine-url" placeholder="搜索URL" value="${url}">
+    <input type="text" class="engine-url" placeholder="搜索URL (%s代表搜索词)" value="${url}">
     <input type="number" class="engine-timeout" placeholder="超时(毫秒)" value="${timeout}">
     <button class="btn btn-danger">删除</button>
   `;
