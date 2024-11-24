@@ -41,16 +41,22 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false) 
   const div = document.createElement('div');
   div.className = 'engine-item';
   
+  // 定义通用的名称框样式
+  const nameBoxStyle = `
+    width: 120px;
+    height: 32px;
+    padding: 0 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+  `;
+  
   if (isCustom) {
-    // 自定义搜索引擎的HTML结构 - 名称可编辑
+    // 自定义搜索引擎的HTML结构
     div.innerHTML = `
       <input type="text" class="engine-name" 
-        style="width: 100px;
-               height: 32px;
-               padding: 0 8px;
-               border: 1px solid #ddd;
-               border-radius: 4px;
-               box-sizing: border-box;"
+        style="${nameBoxStyle}"
         placeholder="搜索引擎名称" 
         value="${name}">
       <input type="text" class="engine-url" 
@@ -62,17 +68,15 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false) 
       <button class="btn btn-danger">删除</button>
     `;
   } else {
-    // 预设搜索引擎的HTML结构 - 名称不可编辑，URL可编辑
+    // 预设搜索引擎的HTML结构
     div.innerHTML = `
       <div class="engine-name" 
-        style="width: 100px;
-               height: 32px;
-               padding: 0 8px;
+        style="${nameBoxStyle}
+               background: #f5f5f5;
                line-height: 32px;
-               border: 1px solid #ddd;
-               border-radius: 4px;
-               box-sizing: border-box;
-               background: #f5f5f5;">${name}</div>
+               overflow: hidden;
+               text-overflow: ellipsis;
+               white-space: nowrap;">${name}</div>
       <input type="text" class="engine-url" 
         placeholder="搜索URL (%s代表搜索词)" 
         value="${url}">
