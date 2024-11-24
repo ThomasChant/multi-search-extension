@@ -6,6 +6,7 @@
     body { 
       width: 500px; 
       padding: 20px;
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
     }
     .header {
       background: #4a6cf7;
@@ -22,18 +23,27 @@
     }
     .engine-name {
       width: 100px;
-      height: 30px;
+      height: 32px;
+      padding: 0 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
     }
     .engine-url {
       width: 250px;
-      height: 30px;
+      height: 32px;
+      padding: 0 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
     }
     .engine-timeout {
       width: 80px;
-      height: 30px;
+      height: 32px;
+      padding: 0 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
     }
     .btn {
-      height: 30px;
+      height: 32px;
       padding: 0 15px;
       border: none;
       border-radius: 4px;
@@ -47,6 +57,37 @@
     .btn-danger {
       background: #dc3545;
       color: white;
+      min-width: 60px;
+    }
+    .guide-section {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background: #f8f9fa;
+      border-left: 4px solid #4a6cf7;
+    }
+    .guide-title {
+      margin: 0 0 10px 0;
+      font-weight: bold;
+      color: #333;
+    }
+    .guide-content {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .guide-content li {
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+    .keyboard-shortcut {
+      background: #eee;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+    .config-guide {
+      border-left-color: #ffc107;
+      margin-top: 15px;
     }
   </style>
 </head>
@@ -57,9 +98,34 @@
   
   <div id="content">
     <div id="engineList"></div>
-    <div style="margin-top: 15px;">
+    <div style="margin: 15px 0;">
       <button id="addEngine" class="btn btn-primary">添加搜索引擎</button>
       <button id="saveEngines" class="btn btn-primary">保存设置</button>
+    </div>
+
+    <div class="guide-section">
+      <h4 class="guide-title">使用说明</h4>
+      <ol class="guide-content">
+        <li>在浏览器地址栏输入 <span class="keyboard-shortcut">ms</span> 并按空格</li>
+        <li>输入要搜索的关键词</li>
+        <li>按回车键 <span class="keyboard-shortcut">Enter</span> 开始搜索</li>
+        <li>插件会自动在新标签页中打开所有已配置的搜索引擎结果</li>
+      </ol>
+    </div>
+
+    <div class="guide-section config-guide">
+      <h4 class="guide-title">配置说明</h4>
+      <ul class="guide-content">
+        <li>选择预设搜索引擎后会自动填充对应的URL</li>
+        <li>选择"自定义"可以添加其他搜索引擎</li>
+        <li>URL中使用 <span class="keyboard-shortcut">%s</span> 表示搜索关键词的位置</li>
+        <li>超时时间（毫秒）：设置页面加载的最长等待时间
+          <ul>
+            <li>建议设置：5000-15000（5-15秒）</li>
+            <li>超时后会自动关闭未加载完成的标签页</li>
+          </ul>
+        </li>
+      </ul>
     </div>
   </div>
 

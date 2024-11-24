@@ -12,6 +12,21 @@ const defaultEngines = {
   }
 };
 
+// 在 defaultEngines 后添加事件处理函数
+function handleEngineSelect(select, urlInput, timeoutInput) {
+  const selectedEngine = select.value;
+  if (selectedEngine && selectedEngine !== 'custom') {
+    const engine = defaultEngines[selectedEngine];
+    urlInput.value = engine.url;
+    timeoutInput.value = engine.timeout;
+    urlInput.readOnly = true;
+  } else {
+    urlInput.value = '';
+    timeoutInput.value = '10000';
+    urlInput.readOnly = false;
+  }
+}
+
 // 添加搜索引擎输入框
 function addEngineInput(name = '', url = '', timeout = 10000) {
   console.log('Adding engine input:', { name, url, timeout });
@@ -31,6 +46,20 @@ function addEngineInput(name = '', url = '', timeout = 10000) {
     <input type="number" class="engine-timeout" placeholder="超时(毫秒)" value="${timeout}">
     <button class="btn btn-danger">删除</button>
   `;
+  
+  // 添加选择搜索引擎的事件监听
+  const select = div.querySelector('.engine-name');
+  const urlInput = div.querySelector('.engine-url');
+  const timeoutInput = div.querySelector('.engine-timeout');
+  
+  select.addEventListener('change', () => {
+    handleEngineSelect(select, urlInput, timeoutInput);
+  });
+
+  // 如果是预设搜索引擎，设置为只读
+  if (name && defaultEngines[name]) {
+    urlInput.readOnly = true;
+  }
   
   // 添加删除按钮事件
   div.querySelector('.btn-danger').addEventListener('click', () => {
