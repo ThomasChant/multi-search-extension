@@ -27,25 +27,28 @@ chrome.runtime.onInstalled.addListener(() => {
 // 监听 omnibox 输入
 chrome.omnibox.onInputEntered.addListener((text) => {
   console.log('Search text:', text);
-
+  
   // 获取搜索引擎配置
   chrome.storage.sync.get('searchEngines', (data) => {
-    console.log('Got engines data:', data);
+    console.log('Got stored engines:', data);
+    
+    // 使用存储的配置，如果没有则使用默认配置
     const engines = data.searchEngines || defaultEngines;
+    console.log('Using engines:', engines);
     
     // 为每个搜索引擎创建标签页
     Object.entries(engines).forEach(([name, engineData]) => {
-      console.log(`Processing engine: ${name}`, engineData);
+      console.log(`Creating search tab for ${name}:`, engineData);
       
-      // 构建搜索 URL
+      // 构建搜索URL
       const searchUrl = engineData.url.replace('%s', encodeURIComponent(text));
-      console.log('Search URL:', searchUrl);
+      console.log(`${name} search URL:`, searchUrl);
       
-      // 创建新标签页
+      // 创建标签页
       chrome.tabs.create({ url: searchUrl }, (tab) => {
         console.log(`Created tab for ${name}:`, tab.id);
         
-        // 设置超时关闭
+        // 设置超时检查
         if (engineData.timeout > 0) {
           setTimeout(() => {
             chrome.tabs.get(tab.id, (tabInfo) => {
@@ -63,18 +66,26 @@ chrome.omnibox.onInputEntered.addListener((text) => {
 
 // 添加默认建议
 chrome.omnibox.onInputStarted.addListener(() => {
-  chrome.omnibox.setDefaultSuggestion({
-    description: '在所有搜索引擎中搜索: %s'
+  chrome.storage.sync.get('searchEngines', (data) => {
+    const engines = data.searchEngines || defaultEngines;
+    const engineCount = Object.keys(engines).length;
+    chrome.omnibox.setDefaultSuggestion({
+      description: `在 ${engineCount} 个搜索引擎中搜索: %s`
+    });
   });
 });
 
 // 输入变化时更新建议
 chrome.omnibox.onInputChanged.addListener((text, suggest) => {
-  chrome.omnibox.setDefaultSuggestion({
-    description: `在所有搜索引擎中搜索: ${text}`
+  chrome.storage.sync.get('searchEngines', (data) => {
+    const engines = data.searchEngines || defaultEngines;
+    const engineCount = Object.keys(engines).length;
+    chrome.omnibox.setDefaultSuggestion({
+      description: `在 ${engineCount} 个搜索引擎中搜索: ${text}`
+    });
   });
 });
 
-// 添加调试日志
+// 输出调试信息
 console.log('Background script loaded');
   
