@@ -108,25 +108,23 @@ function initializeIntroSection() {
   const introContent = document.getElementById('introContent');
   const toggleIcon = introHeader.querySelector('.toggle-icon');
   
-  // 从存储中获取上次的状态
+  // 默认设置为收起状态
+  toggleIcon.style.transform = 'rotate(-90deg)';
+  
+  // 从存储中获取状态，但默认为 true（收起）
   chrome.storage.local.get('introCollapsed', (data) => {
-    if (data.introCollapsed) {
-      introContent.classList.add('collapsed');
-      toggleIcon.style.transform = 'rotate(-90deg)';
+    const isCollapsed = data.introCollapsed === undefined ? true : data.introCollapsed;
+    if (!isCollapsed) {
+      // 只有当明确设置为展开时才展开
+      introContent.classList.remove('collapsed');
+      toggleIcon.style.transform = '';
     }
   });
   
   introHeader.addEventListener('click', () => {
-    console.log('Header clicked'); // 调试日志
     const isCollapsed = introContent.classList.toggle('collapsed');
-    
-    // 更新图标旋转
     toggleIcon.style.transform = isCollapsed ? 'rotate(-90deg)' : '';
-    
-    // 保存状态
-    chrome.storage.local.set({ introCollapsed: isCollapsed }, () => {
-      console.log('State saved:', isCollapsed); // 调试日志
-    });
+    chrome.storage.local.set({ introCollapsed: isCollapsed });
   });
 }
 
