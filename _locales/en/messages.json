@@ -1,0 +1,76 @@
+{
+  "extName": {
+    "message": "Multi Search Engine"
+  },
+  "extDescription": {
+    "message": "Search with multiple search engines simultaneously"
+  },
+  "headerTitle": {
+    "message": "Search Engine Settings"
+  },
+  "addEngine": {
+    "message": "Add Search Engine"
+  },
+  "saveSettings": {
+    "message": "Save Settings"
+  },
+  "usageGuideTitle": {
+    "message": "Usage Guide"
+  },
+  "usageStep1": {
+    "message": "Type $KEY$ in the address bar and press space",
+    "placeholders": {
+      "key": {
+        "content": "ms"
+      }
+    }
+  },
+  "usageStep2": {
+    "message": "Enter your search keywords"
+  },
+  "usageStep3": {
+    "message": "Press Enter to search"
+  },
+  "usageStep4": {
+    "message": "Results will open in new tabs for all configured search engines"
+  },
+  "configGuideTitle": {
+    "message": "Configuration Guide"
+  },
+  "configStep1": {
+    "message": "Select preset search engine to auto-fill URL"
+  },
+  "configStep2": {
+    "message": "Choose \"Custom\" to add other search engines"
+  },
+  "configStep3": {
+    "message": "Use %s in URL to represent search query"
+  },
+  "configStep4": {
+    "message": "Timeout (ms): Set maximum page load waiting time"
+  },
+  "configStep4Sub1": {
+    "message": "Recommended: 5000-15000 (5-15 seconds)"
+  },
+  "configStep4Sub2": {
+    "message": "Tabs will auto-close if loading exceeds timeout"
+  },
+  "selectEngine": {
+    "message": "Select Engine"
+  },
+  "customEngine": {
+    "message": "Custom"
+  },
+  "urlPlaceholder": {
+    "message": "Search URL (%s for query)"
+  },
+  "timeoutPlaceholder": {
+    "message": "Timeout (ms)"
+  },
+  "deleteButton": {
+    "message": "Delete"
+  },
+  "settingsSaved": {
+    "message": "Settings saved!"
+  }
+} 

@@ -1,0 +1,76 @@
+{
+  "extName": {
+    "message": "多搜索引擎"
+  },
+  "extDescription": {
+    "message": "同时使用多个搜索引擎进行搜索"
+  },
+  "headerTitle": {
+    "message": "搜索引擎设置"
+  },
+  "addEngine": {
+    "message": "添加搜索引擎"
+  },
+  "saveSettings": {
+    "message": "保存设置"
+  },
+  "usageGuideTitle": {
+    "message": "使用说明"
+  },
+  "usageStep1": {
+    "message": "在地址栏输入 $KEY$ 并按空格",
+    "placeholders": {
+      "key": {
+        "content": "ms"
+      }
+    }
+  },
+  "usageStep2": {
+    "message": "输入要搜索的关键词"
+  },
+  "usageStep3": {
+    "message": "按回车键开始搜索"
+  },
+  "usageStep4": {
+    "message": "将在新标签页中打开所有配置的搜索引擎结果"
+  },
+  "configGuideTitle": {
+    "message": "配置说明"
+  },
+  "configStep1": {
+    "message": "选择预设搜索引擎后会自动填充对应的URL"
+  },
+  "configStep2": {
+    "message": "选择\"自定义\"可以添加其他搜索引擎"
+  },
+  "configStep3": {
+    "message": "URL中使用 %s 表示搜索关键词的位置"
+  },
+  "configStep4": {
+    "message": "超时时间（毫秒）：设置页面加载的最长等待时间"
+  },
+  "configStep4Sub1": {
+    "message": "建议设置：5000-15000（5-15秒）"
+  },
+  "configStep4Sub2": {
+    "message": "超时后会自动关闭未加载完成的标签页"
+  },
+  "selectEngine": {
+    "message": "选择搜索引擎"
+  },
+  "customEngine": {
+    "message": "自定义"
+  },
+  "urlPlaceholder": {
+    "message": "搜索URL (%s代表搜索词)"
+  },
+  "timeoutPlaceholder": {
+    "message": "超时(毫秒)"
+  },
+  "deleteButton": {
+    "message": "删除"
+  },
+  "settingsSaved": {
+    "message": "设置已保存！"
+  }
+} 
