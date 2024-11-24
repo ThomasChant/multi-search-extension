@@ -36,41 +36,51 @@ function handleEngineSelect(select, urlInput, timeoutInput) {
 }
 
 // 添加搜索引擎输入框
-function addEngineInput(name = '', url = '', timeout = 10000) {
-  console.log('Adding engine input:', { name, url, timeout });
-  
+function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false) {
   const container = document.getElementById('engineList');
   const div = document.createElement('div');
   div.className = 'engine-item';
   
-  // 生成所有默认搜索引擎的选项
-  const selectOptions = Object.keys(defaultEngines)
-    .map(engineName => `<option value="${engineName}" ${engineName === name ? 'selected' : ''}>${engineName}</option>`)
-    .join('');
-    
-  div.innerHTML = `
-    <select class="engine-name">
-      <option value="">选择搜索引擎</option>
-      ${selectOptions}
-      <option value="custom">自定义</option>
-    </select>
-    <input type="text" class="engine-url" placeholder="搜索URL (%s代表搜索词)" value="${url}">
-    <input type="number" class="engine-timeout" placeholder="超时(毫秒)" value="${timeout}">
-    <button class="btn btn-danger">删除</button>
-  `;
-  
-  // 添加选择搜索引擎的事件监听
-  const select = div.querySelector('.engine-name');
-  const urlInput = div.querySelector('.engine-url');
-  const timeoutInput = div.querySelector('.engine-timeout');
-  
-  select.addEventListener('change', () => {
-    handleEngineSelect(select, urlInput, timeoutInput);
-  });
-
-  // 如果是预设搜索引擎，设置为只读
-  if (name && defaultEngines[name]) {
-    urlInput.readOnly = true;
+  if (isCustom) {
+    // 自定义搜索引擎的HTML结构 - 名称可编辑
+    div.innerHTML = `
+      <input type="text" class="engine-name" 
+        style="width: 100px;
+               height: 32px;
+               padding: 0 8px;
+               border: 1px solid #ddd;
+               border-radius: 4px;
+               box-sizing: border-box;"
+        placeholder="搜索引擎名称" 
+        value="${name}">
+      <input type="text" class="engine-url" 
+        placeholder="搜索URL (%s代表搜索词)" 
+        value="${url}">
+      <input type="number" class="engine-timeout" 
+        placeholder="超时(毫秒)" 
+        value="${timeout}">
+      <button class="btn btn-danger">删除</button>
+    `;
+  } else {
+    // 预设搜索引擎的HTML结构 - 名称不可编辑，URL可编辑
+    div.innerHTML = `
+      <div class="engine-name" 
+        style="width: 100px;
+               height: 32px;
+               padding: 0 8px;
+               line-height: 32px;
+               border: 1px solid #ddd;
+               border-radius: 4px;
+               box-sizing: border-box;
+               background: #f5f5f5;">${name}</div>
+      <input type="text" class="engine-url" 
+        placeholder="搜索URL (%s代表搜索词)" 
+        value="${url}">
+      <input type="number" class="engine-timeout" 
+        placeholder="超时(毫秒)" 
+        value="${timeout}">
+      <button class="btn btn-danger">删除</button>
+    `;
   }
   
   // 添加删除按钮事件
@@ -83,32 +93,63 @@ function addEngineInput(name = '', url = '', timeout = 10000) {
 
 // 加载配置
 function loadEngines() {
-  console.log('Loading engines...');
   chrome.storage.sync.get('searchEngines', (data) => {
-    const engines = data.searchEngines || defaultEngines;
-    console.log('Loaded engines:', engines);
+    const container = document.getElementById('engineList');
+    container.innerHTML = '';
     
+    const engines = data.searchEngines || defaultEngines;
+    
+    // 首先加载预设搜索引擎
+    Object.entries(defaultEngines).forEach(([name, defaultData]) => {
+      const engineData = engines[name] || defaultData;
+      addEngineInput(
+        name,
+        engineData.url,
+        engineData.timeout,
+        false  // 预设搜索引擎
+      );
+    });
+    
+    // 然后加载自定义搜索引擎
     Object.entries(engines).forEach(([name, engineData]) => {
-      addEngineInput(name, engineData.url, engineData.timeout);
+      if (!defaultEngines[name]) {
+        addEngineInput(
+          name,
+          engineData.url,
+          engineData.timeout,
+          true  // 自定义搜索引擎
+        );
+      }
     });
   });
 }
 
 // 保存配置
 function saveEngines() {
-  console.log('Saving engines...');
   const engines = {};
+  
+  // 保存所有搜索引擎配置
   document.querySelectorAll('.engine-item').forEach(item => {
-    const name = item.querySelector('.engine-name').value;
+    const nameElement = item.querySelector('.engine-name');
     const url = item.querySelector('.engine-url').value;
     const timeout = parseInt(item.querySelector('.engine-timeout').value) || 10000;
+    
+    // 获取引擎名称
+    let name;
+    if (nameElement.tagName === 'DIV') {
+      // 预设搜索引擎
+      name = nameElement.textContent;
+    } else {
+      // 自定义搜索引擎
+      name = nameElement.value.trim();
+    }
     
     if (name && url) {
       engines[name] = { url, timeout };
     }
   });
   
-  console.log('Saving:', engines);
+  console.log('Saving engines:', engines);
   chrome.storage.sync.set({ searchEngines: engines }, () => {
     alert('设置已保存！');
   });
@@ -149,8 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 添加按钮事件
   document.getElementById('addEngine').addEventListener('click', () => {
-    console.log('Add button clicked');
-    addEngineInput();
+    addEngineInput('', '', 10000, true);  // 添加自定义搜索引擎
   });
   
   // 保存按钮事件
