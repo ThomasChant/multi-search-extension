@@ -97,7 +97,6 @@
       border-left: 4px solid #2196f3;
       font-size: 14px;
       line-height: 1.6;
-      transition: all 0.3s ease;
     }
     
     .intro-header {
@@ -117,30 +116,29 @@
     }
     
     .toggle-icon {
+      display: inline-block;
       transition: transform 0.3s ease;
+      font-size: 12px;
+      margin-left: 5px;
     }
     
     .intro-content {
-      max-height: 500px;
       overflow: hidden;
-      transition: max-height 0.3s ease;
+      transition: all 0.3s ease;
+      opacity: 1;
       margin-top: 10px;
     }
     
     .intro-content.collapsed {
-      max-height: 0;
+      height: 0;
+      opacity: 0;
       margin-top: 0;
+      padding-top: 0;
+      padding-bottom: 0;
     }
     
-    /* 添加一个小图标表示可点击 */
-    .clickable-icon {
-      color: #1565c0;
-      font-size: 18px;
-      transition: transform 0.3s ease;
-    }
-    
-    .intro-header:hover .clickable-icon {
-      opacity: 0.8;
+    .intro-header:hover {
+      opacity: 0.9;
     }
     
     .collapsed .toggle-icon {
@@ -168,13 +166,13 @@
   </div>
   
   <div class="intro-section">
-    <div class="intro-header">
+    <div class="intro-header" id="introHeader">
       <h4>
-        <span>插件介绍</span>
+        插件介绍
         <span class="toggle-icon">▼</span>
       </h4>
     </div>
-    <div class="intro-content">
+    <div class="intro-content" id="introContent">
       <p>这是一个提高搜索效率的多搜索引擎工具。通过一次操作，同时在多个搜索引擎中进行搜索，帮助你：</p>
       <ul class="feature-list">
         <li>在不同搜索引擎中<span class="highlight">对比搜索结果</span></li>

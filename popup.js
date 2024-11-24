@@ -102,9 +102,38 @@ function saveEngines() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM Content Loaded');
+// 在文件开头添加
+function initializeIntroSection() {
+  const introHeader = document.getElementById('introHeader');
+  const introContent = document.getElementById('introContent');
+  const toggleIcon = introHeader.querySelector('.toggle-icon');
   
+  // 从存储中获取上次的状态
+  chrome.storage.local.get('introCollapsed', (data) => {
+    if (data.introCollapsed) {
+      introContent.classList.add('collapsed');
+      toggleIcon.style.transform = 'rotate(-90deg)';
+    }
+  });
+  
+  introHeader.addEventListener('click', () => {
+    console.log('Header clicked'); // 调试日志
+    const isCollapsed = introContent.classList.toggle('collapsed');
+    
+    // 更新图标旋转
+    toggleIcon.style.transform = isCollapsed ? 'rotate(-90deg)' : '';
+    
+    // 保存状态
+    chrome.storage.local.set({ introCollapsed: isCollapsed }, () => {
+      console.log('State saved:', isCollapsed); // 调试日志
+    });
+  });
+}
+
+// 确保在 DOMContentLoaded 时初始化
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM loaded'); // 调试日志
+  initializeIntroSection();
   // 加载已有配置
   loadEngines();
   
