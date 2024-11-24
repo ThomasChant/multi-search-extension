@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "多搜索引擎",
+  "name": "__MSG_appName__",
   "version": "1.0",
-  "description": "同时使用多个搜索引擎进行搜索",
+  "description": "__MSG_appDesc__",
   "default_locale": "zh_CN",
   "permissions": [
     "storage",
@@ -10,5 +10,11 @@
   ],
   "action": {
     "default_popup": "popup.html"
+  },
+  "omnibox": {
+    "keyword": "ms"
+  },
+  "background": {
+    "service_worker": "background.js"
   }
 } 
