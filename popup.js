@@ -163,15 +163,17 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, 
 
 // 添加显示提示的函数
 function showToast(message, type = 'info') {
+  console.log('Showing toast:', message, type);
+  
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
   toast.textContent = message;
   document.body.appendChild(toast);
 
   // 显示动画
-  setTimeout(() => {
+  requestAnimationFrame(() => {
     toast.classList.add('show');
-  }, 100);
+  });
 
   // 3秒后隐藏
   setTimeout(() => {
@@ -184,7 +186,8 @@ function showToast(message, type = 'info') {
 
 // 修改保存设置函数
 async function saveEngines() {
-  console.log('Saving engines...');
+  console.log('Save button clicked');
+  
   try {
     const engines = [];
     const items = document.querySelectorAll('.engine-item');
@@ -212,10 +215,11 @@ async function saveEngines() {
     });
 
     await chrome.storage.sync.set({ engines });
-    showToast(window.i18n.getMessage('settingsSaved'), 'success');
+    console.log('Engines saved successfully');
+    showToast('设置已保存', 'success');
   } catch (error) {
     console.error('Error saving engines:', error);
-    showToast(window.i18n.getMessage('errorSaving'), 'error');
+    showToast('保存失败，请重试', 'error');
   }
 }
 
@@ -277,6 +281,8 @@ function initializeCollapsibles() {
 
 // 添加介绍部分的展开/收起功能
 document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM Content Loaded');
+  
   const introHeader = document.getElementById('introHeader');
   const introContent = document.getElementById('introContent');
   
