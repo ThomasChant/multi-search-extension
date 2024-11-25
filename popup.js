@@ -1,26 +1,47 @@
 console.log('Popup script starting...');
 
-// 等待 i18n 初始化完成后再执行其他操作
-document.addEventListener('DOMContentLoaded', async () => {
-  try {
-    // 确保 i18n 已经初始化
-    if (!window.i18n) {
-      throw new Error('i18n not initialized');
-    }
+// 等待 DOM 和 i18n 加载完成
+let i18nInitialized = false;
 
-    // 等待 i18n 初始化完成
-    await window.i18n.init();
+async function initializeApp() {
+  try {
+    if (!window.i18n) {
+      throw new Error('i18n not found');
+    }
     
-    // 初始化界面元素
+    // 初始化 i18n
+    await window.i18n.init();
+    i18nInitialized = true;
+    
+    // 加载搜索引擎
     await loadEngines();
+    
+    // 初始化事件监听
+    initializeEventListeners();
   } catch (error) {
     console.error('Initialization error:', error);
     showToast('初始化失败', 'error');
   }
-});
+}
 
+// 初始化事件监听
+function initializeEventListeners() {
+  // 添加搜索引擎按钮
+  document.getElementById('addEngine')?.addEventListener('click', () => {
+    addEngineInput('', '', 10000, true, true);
+  });
+
+  // 保存设置按钮
+  document.getElementById('saveEngines')?.addEventListener('click', saveEngines);
+}
+
+// 加载搜索引擎
 async function loadEngines() {
   try {
+    if (!i18nInitialized) {
+      throw new Error('i18n not initialized');
+    }
+
     const { engines } = await chrome.storage.sync.get('engines');
     const container = document.getElementById('engineList');
     
@@ -32,7 +53,6 @@ async function loadEngines() {
     container.innerHTML = '';
 
     if (engines && engines.length > 0) {
-      // 加载保存的搜索引擎
       engines.forEach(engine => addEngineInput(
         engine.name,
         engine.url,
@@ -41,9 +61,7 @@ async function loadEngines() {
         engine.enabled !== false
       ));
     } else {
-      // 加载默认搜索引擎
-      const defaultEngines = getDefaultEngines();
-      defaultEngines.forEach(engine => addEngineInput(
+      getDefaultEngines().forEach(engine => addEngineInput(
         engine.name,
         engine.url,
         10000,
@@ -57,19 +75,10 @@ async function loadEngines() {
   }
 }
 
-// 获取默认搜索引擎配置
-function getDefaultEngines() {
-  return [
-    { name: 'google', url: 'https://www.google.com/search?q=%s' },
-    { name: 'baidu', url: 'https://www.baidu.com/s?wd=%s' },
-    { name: 'bing', url: 'https://www.bing.com/search?q=%s' },
-    { name: 'sogou', url: 'https://www.sogou.com/web?query=%s' }
-  ];
-}
-
+// 添加搜索引擎输入
 function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, enabled = true) {
   try {
-    if (!window.i18n) {
+    if (!i18nInitialized) {
       throw new Error('i18n not initialized');
     }
 
@@ -216,18 +225,15 @@ function initializeIntroSection() {
   });
 }
 
-// 确保在 DOMContentLoaded 时初始化
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM loaded'); // 调试日志
-  initializeIntroSection();
-  // 加载已有配置
-  loadEngines();
-  
-  // 添加按钮事件
-  document.getElementById('addEngine').addEventListener('click', () => {
-    addEngineInput('', '', 10000, true);  // 添加自定义搜索引擎
-  });
-  
-  // 保存按钮事件
-  document.getElementById('saveEngines').addEventListener('click', saveEngines);
-}); 
+// 获取默认搜索引擎配置
+function getDefaultEngines() {
+  return [
+    { name: 'google', url: 'https://www.google.com/search?q=%s' },
+    { name: 'baidu', url: 'https://www.baidu.com/s?wd=%s' },
+    { name: 'bing', url: 'https://www.bing.com/search?q=%s' },
+    { name: 'sogou', url: 'https://www.sogou.com/web?query=%s' }
+  ];
+}
+
+// 在 DOMContentLoaded 时初始化应用
+document.addEventListener('DOMContentLoaded', initializeApp); 

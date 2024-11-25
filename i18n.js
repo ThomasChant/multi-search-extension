@@ -1,6 +1,5 @@
 /**
  * 国际化管理器
- * 负责处理语言切换、文本翻译和界面更新
  */
 class I18nManager {
   constructor() {
@@ -17,7 +16,6 @@ class I18nManager {
     this.setLocale = this.setLocale.bind(this);
     this.getMessage = this.getMessage.bind(this);
     this.updateUI = this.updateUI.bind(this);
-    this.updateLanguageButtons = this.updateLanguageButtons.bind(this);
   }
 
   /**
@@ -36,32 +34,11 @@ class I18nManager {
 
       // 初始化界面
       await this.updateUI();
-      // 更新语言按钮状态
-      this.updateLanguageButtons();
-      
-      // 添加语言切换按钮事件监听
-      this.initLanguageButtons();
       
       console.log('I18n initialized:', this.currentLocale);
     } catch (error) {
       console.error('Failed to initialize i18n:', error);
       throw error; // 向上传递错误
-    }
-  }
-
-  /**
-   * 初始化语言切换按钮
-   */
-  initLanguageButtons() {
-    try {
-      document.querySelectorAll('.language-btn').forEach(btn => {
-        btn.addEventListener('click', async (event) => {
-          const newLocale = event.target.getAttribute('data-locale');
-          await this.setLocale(newLocale);
-        });
-      });
-    } catch (error) {
-      console.error('Failed to initialize language buttons:', error);
     }
   }
 
@@ -106,12 +83,6 @@ class I18nManager {
       // 更新界面
       await this.updateUI();
       
-      // 更新语言按钮状态
-      this.updateLanguageButtons();
-      
-      // 重新加载搜索引擎列表
-      await this.reloadEngineList();
-      
       console.log('Language changed to:', locale);
     } catch (error) {
       console.error('Failed to set locale:', error);
@@ -150,51 +121,7 @@ class I18nManager {
       throw error;
     }
   }
-
-  /**
-   * 更新语言切换按钮状态
-   */
-  updateLanguageButtons() {
-    try {
-      document.querySelectorAll('.language-btn').forEach(btn => {
-        const btnLocale = btn.getAttribute('data-locale');
-        btn.classList.toggle('active', btnLocale === this.currentLocale);
-      });
-    } catch (error) {
-      console.error('Failed to update language buttons:', error);
-    }
-  }
-
-  /**
-   * 重新加载搜索引擎列表
-   * @returns {Promise<void>}
-   */
-  async reloadEngineList() {
-    try {
-      const engineList = document.getElementById('engineList');
-      if (!engineList) {
-        throw new Error('Engine list container not found');
-      }
-
-      // 清空现有列表
-      engineList.innerHTML = '';
-      
-      // 重新加载搜索引擎
-      if (typeof window.loadEngines === 'function') {
-        await window.loadEngines();
-      } else {
-        throw new Error('loadEngines function not found');
-      }
-    } catch (error) {
-      console.error('Failed to reload engine list:', error);
-      throw error;
-    }
-  }
 }
 
-// 创建单例实例
-const i18n = new I18nManager();
-
-// 导出实例
-window.i18n = i18n;
-export default i18n; 
+// 创建全局实例
+window.i18n = new I18nManager(); 
