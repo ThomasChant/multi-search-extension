@@ -1,43 +1,78 @@
 console.log('Popup script starting...');
 
-// 默认搜索引擎配置
-const defaultEngines = {
-  "Google": {
-    url: "https://www.google.com/search?q=%s",
-    timeout: 10000
-  },
-  "百度": {
-    url: "https://www.baidu.com/s?wd=%s",
-    timeout: 10000
-  },
-  "必应": {
-    url: "https://www.bing.com/search?q=%s",
-    timeout: 10000
-  },
-  "搜狗": {
-    url: "https://www.sogou.com/web?query=%s",
-    timeout: 10000
-  }
-};
+// 等待 i18n 初始化完成后再执行其他操作
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    // 确保 i18n 已经初始化
+    if (!window.i18n) {
+      throw new Error('i18n not initialized');
+    }
 
-// 在 defaultEngines 后添加事件处理函数
-function handleEngineSelect(select, urlInput, timeoutInput) {
-  const selectedEngine = select.value;
-  if (selectedEngine && selectedEngine !== 'custom') {
-    const engine = defaultEngines[selectedEngine];
-    urlInput.value = engine.url;
-    timeoutInput.value = engine.timeout;
-    urlInput.readOnly = true;
-  } else {
-    urlInput.value = '';
-    timeoutInput.value = '10000';
-    urlInput.readOnly = false;
+    // 等待 i18n 初始化完成
+    await window.i18n.init();
+    
+    // 初始化界面元素
+    await loadEngines();
+  } catch (error) {
+    console.error('Initialization error:', error);
+    showToast('初始化失败', 'error');
+  }
+});
+
+async function loadEngines() {
+  try {
+    const { engines } = await chrome.storage.sync.get('engines');
+    const container = document.getElementById('engineList');
+    
+    if (!container) {
+      throw new Error('Engine list container not found');
+    }
+
+    // 清空现有列表
+    container.innerHTML = '';
+
+    if (engines && engines.length > 0) {
+      // 加载保存的搜索引擎
+      engines.forEach(engine => addEngineInput(
+        engine.name,
+        engine.url,
+        engine.timeout || 10000,
+        engine.isCustom || false,
+        engine.enabled !== false
+      ));
+    } else {
+      // 加载默认搜索引擎
+      const defaultEngines = getDefaultEngines();
+      defaultEngines.forEach(engine => addEngineInput(
+        engine.name,
+        engine.url,
+        10000,
+        false,
+        true
+      ));
+    }
+  } catch (error) {
+    console.error('Error loading engines:', error);
+    showToast('加载搜索引擎失败', 'error');
   }
 }
 
-// 添加搜索引擎输入框
+// 获取默认搜索引擎配置
+function getDefaultEngines() {
+  return [
+    { name: 'google', url: 'https://www.google.com/search?q=%s' },
+    { name: 'baidu', url: 'https://www.baidu.com/s?wd=%s' },
+    { name: 'bing', url: 'https://www.bing.com/search?q=%s' },
+    { name: 'sogou', url: 'https://www.sogou.com/web?query=%s' }
+  ];
+}
+
 function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, enabled = true) {
   try {
+    if (!window.i18n) {
+      throw new Error('i18n not initialized');
+    }
+
     const container = document.getElementById('engineList');
     if (!container) {
       throw new Error('Engine list container not found');
@@ -54,100 +89,51 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, 
         </svg>
       </button>
     `;
-    
+
     if (isCustom) {
-      // 自定义搜索引擎的HTML结构
       div.innerHTML = `
         <input type="text" class="engine-name" 
-          placeholder="搜索引擎名称" 
+          placeholder="${window.i18n.getMessage('searchEngineName')}" 
           value="${name}">
         <input type="text" class="engine-url" 
-          placeholder="搜索URL (%s代表搜索词)" 
+          placeholder="${window.i18n.getMessage('searchUrl')}" 
           value="${url}">
         <input type="number" class="engine-timeout" 
-          placeholder="超时" 
+          placeholder="${window.i18n.getMessage('timeout')}" 
           value="${timeout}">
-        ${switchHtml}
+        <label class="switch">
+          <input type="checkbox" class="engine-enabled" ${enabled ? 'checked' : ''}>
+          <span class="slider round"></span>
+        </label>
         ${deleteButton}
       `;
     } else {
-      // 预设搜索引擎的HTML结构
       div.innerHTML = `
-        <div class="engine-name">${name}</div>
+        <span class="engine-name" data-engine-key="${name}">${window.i18n.getMessage(name)}</span>
         <input type="text" class="engine-url" 
-          placeholder="搜索URL (%s代表搜索词)" 
+          placeholder="${window.i18n.getMessage('searchUrl')}" 
           value="${url}">
         <input type="number" class="engine-timeout" 
-          placeholder="超时" 
+          placeholder="${window.i18n.getMessage('timeout')}" 
           value="${timeout}">
-        ${switchHtml}
+        <label class="switch">
+          <input type="checkbox" class="engine-enabled" ${enabled ? 'checked' : ''}>
+          <span class="slider round"></span>
+        </label>
         ${deleteButton}
       `;
     }
-    
-    // 添加开关事件监听
-    const enabledSwitch = div.querySelector('.engine-enabled');
-    enabledSwitch.addEventListener('change', () => {
-      div.classList.toggle('disabled', !enabledSwitch.checked);
-    });
-    
-    // 添加删除按钮事件
-    div.querySelector('.delete-btn').addEventListener('click', () => {
+
+    // 添加删除按钮事件监听
+    const deleteBtn = div.querySelector('.delete-btn');
+    deleteBtn.addEventListener('click', () => {
       div.remove();
     });
-    
+
     container.appendChild(div);
   } catch (error) {
     console.error('Error adding engine input:', error);
-  }
-}
-
-// 加载配置
-async function loadEngines() {
-  try {
-    const { engines } = await chrome.storage.sync.get('engines');
-    const container = document.getElementById('engineList');
-    
-    if (!container) {
-      throw new Error('Engine list container not found');
-    }
-
-    // 清空现有列表
-    container.innerHTML = '';
-
-    if (engines && engines.length > 0) {
-      // 加载保存的搜索引擎
-      engines.forEach(engine => {
-        addEngineInput(
-          engine.name,
-          engine.url,
-          engine.timeout || 10000,
-          engine.isCustom || false,
-          engine.enabled !== false
-        );
-      });
-    } else {
-      // 加载默认搜索引擎
-      const defaultEngines = [
-        { name: 'google', url: 'https://www.google.com/search?q=%s' },
-        { name: 'baidu', url: 'https://www.baidu.com/s?wd=%s' },
-        { name: 'bing', url: 'https://www.bing.com/search?q=%s' },
-        { name: 'sogou', url: 'https://www.sogou.com/web?query=%s' }
-      ];
-
-      defaultEngines.forEach(engine => {
-        addEngineInput(
-          engine.name,
-          engine.url,
-          10000,
-          false,
-          true
-        );
-      });
-    }
-  } catch (error) {
-    console.error('Error loading engines:', error);
-    showToast(window.i18n.getMessage('errorLoading'));
+    showToast('添加搜索引擎失败', 'error');
   }
 }
 
