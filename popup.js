@@ -148,6 +148,17 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, 
       `;
     }
 
+    // 修改名称输入框样式
+    const nameInput = div.querySelector('.engine-name');
+    if (!isCustom) {
+      nameInput.style.cssText = `
+        background-color: #f0f0f0;
+        color: #666;
+        cursor: not-allowed;
+      `;
+      nameInput.readOnly = true;  // 设置为只读
+    }
+
     // 添加删除按钮事件监听
     const deleteBtn = div.querySelector('.delete-btn');
     deleteBtn.addEventListener('click', () => {
