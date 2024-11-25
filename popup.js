@@ -163,16 +163,15 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, 
 
 // 简化版的 Toast 提示函数
 function showToast(message) {
-  // 创建提示框元素
   const toast = document.createElement('div');
   toast.textContent = message;
   
-  // 设置基本样式
+  // 修改样式，将提示框定位到屏幕中间
   toast.style.cssText = `
     position: fixed;
-    bottom: 20px;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     background: #4CAF50;
     color: white;
     padding: 12px 24px;
@@ -180,10 +179,8 @@ function showToast(message) {
     z-index: 9999;
   `;
   
-  // 添加到页面
   document.body.appendChild(toast);
   
-  // 3秒后移除
   setTimeout(() => {
     document.body.removeChild(toast);
   }, 3000);
