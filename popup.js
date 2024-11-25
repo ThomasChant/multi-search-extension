@@ -161,47 +161,36 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, 
   }
 }
 
-// 添加显示提示的函数
-function showToast(message, type = 'info') {
-  // 移除可能存在的旧 toast
-  const existingToast = document.querySelector('.toast');
-  if (existingToast) {
-    existingToast.remove();
-  }
-
+// 简化版的 Toast 提示函数
+function showToast(message) {
+  // 创建提示框元素
   const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  toast.style.cssText = `
-    position: fixed !important;
-    bottom: 20px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    background-color: ${type === 'success' ? '#4CAF50' : '#f44336'} !important;
-    color: white !important;
-    padding: 12px 24px !important;
-    border-radius: 4px !important;
-    z-index: 9999 !important;
-  `;
   toast.textContent = message;
+  
+  // 设置基本样式
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4CAF50;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    z-index: 9999;
+  `;
+  
+  // 添加到页面
   document.body.appendChild(toast);
-
-  // 强制重绘
-  toast.offsetHeight;
-
-  // 显示
-  toast.style.opacity = '1';
-
-  // 3秒后隐藏
+  
+  // 3秒后移除
   setTimeout(() => {
-    toast.style.opacity = '0';
-    setTimeout(() => toast.remove(), 300);
+    document.body.removeChild(toast);
   }, 3000);
 }
 
-// 修改保存设置函数
+// 修改保存函数
 async function saveEngines() {
-  console.log('Save button clicked');
-  
   try {
     const engines = [];
     const items = document.querySelectorAll('.engine-item');
@@ -229,11 +218,10 @@ async function saveEngines() {
     });
 
     await chrome.storage.sync.set({ engines });
-    console.log('Engines saved successfully');
-    showToast('设置已保存', 'success');
+    showToast('保存成功');  // 直接调用，不使用复杂的动画
   } catch (error) {
-    console.error('Error saving engines:', error);
-    showToast('保存失败，请重试', 'error');
+    console.error('保存失败:', error);
+    showToast('保存失败');
   }
 }
 
