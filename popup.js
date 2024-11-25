@@ -245,7 +245,7 @@ function initializeIntroSection() {
   chrome.storage.local.get('introCollapsed', (data) => {
     const isCollapsed = data.introCollapsed === undefined ? true : data.introCollapsed;
     if (!isCollapsed) {
-      // 只有当明确设置为展开时才展开
+      // 只���当明确设置为展开时才展开
       introContent.classList.remove('collapsed');
       toggleIcon.style.transform = '';
     }
@@ -260,12 +260,37 @@ function initializeIntroSection() {
 
 // 获取默认搜索引擎配置
 function getDefaultEngines() {
-  return [
-    { name: 'google', url: 'https://www.google.com/search?q=%s' },
-    { name: 'baidu', url: 'https://www.baidu.com/s?wd=%s' },
-    { name: 'bing', url: 'https://www.bing.com/search?q=%s' },
-    { name: 'sogou', url: 'https://www.sogou.com/web?query=%s' }
-  ];
+  const defaultEngines = {
+    'google': {
+      name: '谷歌',
+      url: 'https://www.google.com/search?q=%s',
+      timeout: 10000,
+      enabled: true,
+      isCustom: false
+    },
+    'baidu': {
+      name: '百度',
+      url: 'https://www.baidu.com/s?wd=%s',
+      timeout: 10000,
+      enabled: true,
+      isCustom: false
+    },
+    'bing': {
+      name: '必应',
+      url: 'https://www.bing.com/search?q=%s',
+      timeout: 10000,
+      enabled: true,
+      isCustom: false
+    },
+    'sogou': {
+      name: '搜狗',
+      url: 'https://www.sogou.com/web?query=%s',
+      timeout: 10000,
+      enabled: true,
+      isCustom: false
+    }
+  };
+  return Object.values(defaultEngines);
 }
 
 // 初始化折叠面板
