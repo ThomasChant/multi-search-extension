@@ -103,59 +103,74 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, 
 }
 
 // 加载配置
-function loadEngines() {
-  chrome.storage.sync.get('searchEngines', (data) => {
+async function loadEngines() {
+  try {
+    const { engines } = await chrome.storage.sync.get('engines');
     const container = document.getElementById('engineList');
+    
+    if (!container) {
+      throw new Error('Engine list container not found');
+    }
+
+    // 清空现有列表
     container.innerHTML = '';
-    
-    const engines = data.searchEngines || defaultEngines;
-    
-    // 首先加载预设搜索引擎
-    Object.entries(defaultEngines).forEach(([name, defaultData]) => {
-      const engineData = engines[name] || defaultData;
-      addEngineInput(
-        name,
-        engineData.url,
-        engineData.timeout,
-        false,  // 预设搜索引擎
-        engineData.enabled !== false  // 默认启用
-      );
-    });
-    
-    // 然后加载自定义搜索引擎
-    Object.entries(engines).forEach(([name, engineData]) => {
-      if (!defaultEngines[name]) {
+
+    if (engines && engines.length > 0) {
+      // 加载保存的搜索引擎
+      engines.forEach(engine => {
         addEngineInput(
-          name,
-          engineData.url,
-          engineData.timeout,
-          true,  // 自定义搜索引擎
-          engineData.enabled !== false  // 默认启用
+          engine.name,
+          engine.url,
+          engine.timeout || 10000,
+          engine.isCustom || false,
+          engine.enabled !== false
         );
-      }
-    });
-  });
+      });
+    } else {
+      // 加载默认搜索引擎
+      const defaultEngines = [
+        { name: 'google', url: 'https://www.google.com/search?q=%s' },
+        { name: 'baidu', url: 'https://www.baidu.com/s?wd=%s' },
+        { name: 'bing', url: 'https://www.bing.com/search?q=%s' },
+        { name: 'sogou', url: 'https://www.sogou.com/web?query=%s' }
+      ];
+
+      defaultEngines.forEach(engine => {
+        addEngineInput(
+          engine.name,
+          engine.url,
+          10000,
+          false,
+          true
+        );
+      });
+    }
+  } catch (error) {
+    console.error('Error loading engines:', error);
+    showToast(window.i18n.getMessage('errorLoading'));
+  }
 }
 
 // 添加显示提示的函数
-function showToast(message, type = 'success') {
-  const toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.className = `toast ${type}`;
-  toast.style.display = 'block';
-  
-  // 重置可能的淡出动画
-  toast.style.animation = 'slideIn 0.3s ease-out';
-  
-  // 2秒后开始淡出
-  setTimeout(() => {
-    toast.style.animation = 'fadeOut 0.3s ease-out';
-    
-    // 动画结束后隐藏
+function showToast(message, type = 'info') {
+  try {
+    const toast = document.getElementById('toast');
+    if (!toast) {
+      throw new Error('Toast element not found');
+    }
+
+    // 添加不同类型的提示样式
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    toast.style.display = 'block';
+
+    // 自动隐藏
     setTimeout(() => {
       toast.style.display = 'none';
-    }, 300);
-  }, 2000);
+    }, 3000);
+  } catch (error) {
+    console.error('Error showing toast:', error);
+  }
 }
 
 // 修改保存配置的函数
