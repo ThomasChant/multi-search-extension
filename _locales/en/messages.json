@@ -71,6 +71,9 @@
     "message": "Delete"
   },
   "settingsSaved": {
-    "message": "Settings saved!"
+    "message": "Settings saved successfully"
+  },
+  "errorSaving": {
+    "message": "Failed to save settings"
   }
 } 

@@ -13,6 +13,9 @@ async function initializeApp() {
     await window.i18n.init();
     i18nInitialized = true;
     
+    // 初始化折叠面板
+    initializeCollapsibles();
+    
     // 加载搜索引擎
     await loadEngines();
     
@@ -27,12 +30,24 @@ async function initializeApp() {
 // 初始化事件监听
 function initializeEventListeners() {
   // 添加搜索引擎按钮
-  document.getElementById('addEngine')?.addEventListener('click', () => {
-    addEngineInput('', '', 10000, true, true);
-  });
+  const addEngineBtn = document.getElementById('addEngine');
+  if (addEngineBtn) {
+    addEngineBtn.addEventListener('click', () => {
+      addEngineInput('', '', 10000, true, true);
+    });
+  }
 
   // 保存设置按钮
-  document.getElementById('saveEngines')?.addEventListener('click', saveEngines);
+  const saveEnginesBtn = document.getElementById('saveEngines');
+  if (saveEnginesBtn) {
+    saveEnginesBtn.addEventListener('click', saveEngines);
+  }
+
+  // 添加错处理
+  if (!addEngineBtn || !saveEnginesBtn) {
+    console.error('Required buttons not found');
+    showToast('初始化按钮失败', 'error');
+  }
 }
 
 // 加载搜索引擎
@@ -148,55 +163,60 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, 
 
 // 添加显示提示的函数
 function showToast(message, type = 'info') {
-  try {
-    const toast = document.getElementById('toast');
-    if (!toast) {
-      throw new Error('Toast element not found');
-    }
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  document.body.appendChild(toast);
 
-    // 添加不同类型的提示样式
-    toast.className = `toast ${type}`;
-    toast.textContent = message;
-    toast.style.display = 'block';
+  // 显示动画
+  setTimeout(() => {
+    toast.classList.add('show');
+  }, 100);
 
-    // 自动隐藏
+  // 3秒后隐藏
+  setTimeout(() => {
+    toast.classList.remove('show');
     setTimeout(() => {
-      toast.style.display = 'none';
-    }, 3000);
-  } catch (error) {
-    console.error('Error showing toast:', error);
-  }
+      toast.remove();
+    }, 300);
+  }, 3000);
 }
 
-// 修改保存配置的函数
-function saveEngines() {
-  const engines = {};
-  
-  document.querySelectorAll('.engine-item').forEach(item => {
-    const nameElement = item.querySelector('.engine-name');
-    const url = item.querySelector('.engine-url').value;
-    const timeout = parseInt(item.querySelector('.engine-timeout').value) || 10000;
-    const enabled = item.querySelector('.engine-enabled').checked;
+// 修改保存设置函数
+async function saveEngines() {
+  console.log('Saving engines...');
+  try {
+    const engines = [];
+    const items = document.querySelectorAll('.engine-item');
     
-    // 获取引擎名称
-    let name;
-    if (nameElement.tagName === 'DIV') {
-      // 预设搜索引擎
-      name = nameElement.textContent;
-    } else {
-      // 自定义搜索引擎
-      name = nameElement.value.trim();
+    if (items.length === 0) {
+      throw new Error('No engines to save');
     }
-    
-    if (name && url) {
-      engines[name] = { url, timeout, enabled };
-    }
-  });
-  
-  console.log('Saving engines:', engines);
-  chrome.storage.sync.set({ searchEngines: engines }, () => {
-    showToast('设置已保存！');
-  });
+
+    items.forEach(item => {
+      const nameElement = item.querySelector('.engine-name');
+      const name = nameElement.tagName === 'INPUT' ? 
+        nameElement.value : 
+        nameElement.getAttribute('data-engine-key');
+
+      const url = item.querySelector('.engine-url').value;
+      const timeout = parseInt(item.querySelector('.engine-timeout').value);
+      const enabled = item.querySelector('.engine-enabled').checked;
+      const isCustom = nameElement.tagName === 'INPUT';
+
+      if (!name || !url) {
+        throw new Error('Invalid engine configuration');
+      }
+
+      engines.push({ name, url, timeout, enabled, isCustom });
+    });
+
+    await chrome.storage.sync.set({ engines });
+    showToast(window.i18n.getMessage('settingsSaved'), 'success');
+  } catch (error) {
+    console.error('Error saving engines:', error);
+    showToast(window.i18n.getMessage('errorSaving'), 'error');
+  }
 }
 
 // 在文件开头添加
@@ -234,6 +254,40 @@ function getDefaultEngines() {
     { name: 'sogou', url: 'https://www.sogou.com/web?query=%s' }
   ];
 }
+
+// 初始化折叠面板
+function initializeCollapsibles() {
+  document.querySelectorAll('.collapsible').forEach(panel => {
+    const header = panel.querySelector('.collapsible-header');
+    const content = panel.querySelector('.collapsible-content');
+    
+    if (header && content) {
+      header.addEventListener('click', () => {
+        panel.classList.toggle('active');
+        
+        if (panel.classList.contains('active')) {
+          content.style.maxHeight = content.scrollHeight + 'px';
+        } else {
+          content.style.maxHeight = '0';
+        }
+      });
+    }
+  });
+}
+
+// 添加介绍部分的展开/收起功能
+document.addEventListener('DOMContentLoaded', function() {
+  const introHeader = document.getElementById('introHeader');
+  const introContent = document.getElementById('introContent');
+  
+  introHeader.addEventListener('click', function() {
+    introContent.classList.toggle('collapsed');
+    const toggleIcon = introHeader.querySelector('.toggle-icon');
+    toggleIcon.style.transform = introContent.classList.contains('collapsed') 
+      ? 'rotate(-90deg)' 
+      : 'rotate(0deg)';
+  });
+});
 
 // 在 DOMContentLoaded 时初始化应用
 document.addEventListener('DOMContentLoaded', initializeApp); 

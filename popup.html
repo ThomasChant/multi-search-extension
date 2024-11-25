@@ -297,6 +297,79 @@
       width: 16px;
       height: 16px;
     }
+
+    /* Toast 样式 */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      padding: 12px 24px;
+      border-radius: 4px;
+      color: white;
+      font-size: 14px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success {
+      background-color: #28a745;
+    }
+
+    .toast.error {
+      background-color: #dc3545;
+    }
+
+    .toast.info {
+      background-color: #17a2b8;
+    }
+
+    /* 折叠面板样式 */
+    .collapsible {
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+
+    .collapsible-header {
+      padding: 12px 16px;
+      background-color: #f8f9fa;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      user-select: none;
+    }
+
+    .collapsible-header:hover {
+      background-color: #e9ecef;
+    }
+
+    .collapsible-icon {
+      margin-right: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .collapsible.active .collapsible-icon {
+      transform: rotate(180deg);
+    }
+
+    .collapsible-content {
+      padding: 0 16px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .collapsible.active .collapsible-content {
+      padding: 16px;
+    }
   </style>
 </head>
 <body>
@@ -312,7 +385,7 @@
       </h4>
     </div>
     <div class="intro-content collapsed" id="introContent">
-      <p>这是一个提高搜索效率的多搜索引擎工具。通过一次���作，同时在多个搜索引擎中进行搜索，帮助你：</p>
+      <p>这是一个提高搜索效率的多搜索引擎工具。通过一次作，同时在多个搜索引擎中进行搜索，帮助你：</p>
       <ul class="feature-list">
         <li>在不同搜索引擎中<span class="highlight">对比搜索结果</span></li>
         <li>快速获取<span class="highlight">多个搜索引擎的结果</span>，无需重复输入</li>
@@ -341,7 +414,7 @@
       <li>在浏览器地址栏输入 <span class="keyboard-shortcut">ms</span> 并按空格</li>
       <li>输入要搜索的关键词</li>
       <li>按回车键 <span class="keyboard-shortcut">Enter</span> 开始搜索</li>
-      <li>插件会自动在新标签页中打开所���已配置的搜索引擎结果</li>
+      <li>插件会自动在新标签页中打开所已配置的搜索引擎结果</li>
     </ol>
   </div>
 

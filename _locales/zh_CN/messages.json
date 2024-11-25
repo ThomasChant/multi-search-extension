@@ -6,5 +6,11 @@
   "appDesc": {
     "message": "同时使用多个搜索引擎进行搜索",
     "description": "扩展描述"
+  },
+  "settingsSaved": {
+    "message": "设置已保存"
+  },
+  "errorSaving": {
+    "message": "保存失败，请重试"
   }
 } 
