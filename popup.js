@@ -182,7 +182,7 @@ function showToast(message) {
   
   setTimeout(() => {
     document.body.removeChild(toast);
-  }, 2000);
+  }, 1000);
 }
 
 // 修改保存函数
