@@ -311,4 +311,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 在 DOMContentLoaded 时初始化应用
 document.addEventListener('DOMContentLoaded', initializeApp); 
-
