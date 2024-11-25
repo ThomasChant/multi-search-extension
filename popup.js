@@ -163,24 +163,38 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, 
 
 // 添加显示提示的函数
 function showToast(message, type = 'info') {
-  console.log('Showing toast:', message, type);
-  
+  // 移除可能存在的旧 toast
+  const existingToast = document.querySelector('.toast');
+  if (existingToast) {
+    existingToast.remove();
+  }
+
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
+  toast.style.cssText = `
+    position: fixed !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    background-color: ${type === 'success' ? '#4CAF50' : '#f44336'} !important;
+    color: white !important;
+    padding: 12px 24px !important;
+    border-radius: 4px !important;
+    z-index: 9999 !important;
+  `;
   toast.textContent = message;
   document.body.appendChild(toast);
 
-  // 显示动画
-  requestAnimationFrame(() => {
-    toast.classList.add('show');
-  });
+  // 强制重绘
+  toast.offsetHeight;
+
+  // 显示
+  toast.style.opacity = '1';
 
   // 3秒后隐藏
   setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => {
-      toast.remove();
-    }, 300);
+    toast.style.opacity = '0';
+    setTimeout(() => toast.remove(), 300);
   }, 3000);
 }
 
