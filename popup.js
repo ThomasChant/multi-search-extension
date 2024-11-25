@@ -245,7 +245,7 @@ function initializeIntroSection() {
   chrome.storage.local.get('introCollapsed', (data) => {
     const isCollapsed = data.introCollapsed === undefined ? true : data.introCollapsed;
     if (!isCollapsed) {
-      // 只���当明确设置为展开时才展开
+      // 只当明确设置为展开时才展开
       introContent.classList.remove('collapsed');
       toggleIcon.style.transform = '';
     }
