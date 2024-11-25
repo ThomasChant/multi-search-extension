@@ -83,4 +83,13 @@ chrome.omnibox.onInputChanged.addListener((text, suggest) => {
 
 // 输出调试信息
 console.log('Background script loaded');
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'ENGINES_UPDATED') {
+    // 重新加载搜索引擎配置
+    loadEnginesConfig();
+    sendResponse({status: 'success'});
+  }
+  return true; // 保持消息通道开放
+});
   

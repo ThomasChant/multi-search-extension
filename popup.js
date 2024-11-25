@@ -244,12 +244,10 @@ async function saveEngines() {
       const timeoutInput = item.querySelector('.engine-timeout');
       const enabledInput = item.querySelector('.engine-enabled');
 
-      // 检查必要元素是否存在
       if (!nameElement || !urlInput || !timeoutInput || !enabledInput) {
         throw new Error('Missing required elements');
       }
 
-      // 获取名称（区分 input 和 span）
       const name = nameElement.tagName.toLowerCase() === 'input' ? 
         nameElement.value : 
         nameElement.textContent;
@@ -259,7 +257,6 @@ async function saveEngines() {
       const enabled = enabledInput.checked;
       const isCustom = nameElement.tagName.toLowerCase() === 'input';
 
-      // 验证必要的值
       if (!name || !url) {
         throw new Error('名称和URL不能为空');
       }
@@ -268,7 +265,15 @@ async function saveEngines() {
     });
 
     await chrome.storage.sync.set({ engines });
-    showToast('保存成功');
+    
+    // 使用 try-catch 包裹消息发送
+    try {
+      await chrome.runtime.sendMessage({ type: 'ENGINES_UPDATED' });
+      showToast('保存成功');
+    } catch (messageError) {
+      console.error('发送消息失败:', messageError);
+      showToast('保存成功，但无法更新后台。请重新加载扩展。');
+    }
   } catch (error) {
     console.error('保存失败:', error);
     showToast('保存失败: ' + error.message);
