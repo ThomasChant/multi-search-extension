@@ -166,7 +166,6 @@ function showToast(message) {
   const toast = document.createElement('div');
   toast.textContent = message;
   
-  // 修改样式，将提示框定位到屏幕中间
   toast.style.cssText = `
     position: fixed;
     top: 50%;
@@ -183,7 +182,7 @@ function showToast(message) {
   
   setTimeout(() => {
     document.body.removeChild(toast);
-  }, 3000);
+  }, 2000);
 }
 
 // 修改保存函数
