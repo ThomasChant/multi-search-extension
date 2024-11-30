@@ -8,17 +8,17 @@ async function initializeApp() {
     if (!window.i18n) {
       throw new Error('i18n not found');
     }
-    
+
     // 初始化 i18n
     await window.i18n.init();
     i18nInitialized = true;
-    
+
     // 初始化折叠面板
     initializeCollapsibles();
-    
+
     // 加载搜索引擎
     await loadEngines();
-    
+
     // 初始化事件监听
     initializeEventListeners();
   } catch (error) {
@@ -59,7 +59,7 @@ async function loadEngines() {
 
     const { engines } = await chrome.storage.sync.get('engines');
     const container = document.getElementById('engineList');
-    
+
     if (!container) {
       throw new Error('Engine list container not found');
     }
@@ -104,14 +104,14 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, 
 
     const item = document.createElement('div');
     item.className = 'engine-item';
-    
+
     if (isCustom) {
-        // 如果是自定义输入框
-        const nameInputElement = document.createElement('input');
-        nameInputElement.type = 'text';
-        nameInputElement.className = 'engine-name';
-        nameInputElement.value = name;
-        nameInputElement.style.cssText = `
+      // 如果是自定义输入框
+      const nameInputElement = document.createElement('input');
+      nameInputElement.type = 'text';
+      nameInputElement.className = 'engine-name';
+      nameInputElement.value = name;
+      nameInputElement.style.cssText = `
             width: 100px;
             height: 24px;
             line-height: 24px;
@@ -123,13 +123,13 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, 
             box-sizing: border-box;
             vertical-align: middle;
         `;
-        item.appendChild(nameInputElement);
+      item.appendChild(nameInputElement);
     } else {
-        // 如果是固定的搜索引擎名称
-        const nameSpan = document.createElement('span');
-        nameSpan.className = 'engine-name';
-        nameSpan.textContent = name;
-        nameSpan.style.cssText = `
+      // 如果是固定的搜索引擎名称
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'engine-name';
+      nameSpan.textContent = name;
+      nameSpan.style.cssText = `
             display: inline-flex;
             align-items: center;
             justify-content: flex-start;
@@ -145,9 +145,9 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, 
             padding: 0 5px;
             box-sizing: border-box;
         `;
-        item.appendChild(nameSpan);
+      item.appendChild(nameSpan);
     }
-    
+
     const urlInput = document.createElement('input');
     urlInput.type = 'text';
     urlInput.className = 'engine-url';
@@ -212,7 +212,7 @@ function createDeleteButton() {
 function showToast(message) {
   const toast = document.createElement('div');
   toast.textContent = message;
-  
+
   toast.style.cssText = `
     position: fixed;
     top: 50%;
@@ -224,9 +224,9 @@ function showToast(message) {
     border-radius: 4px;
     z-index: 9999;
   `;
-  
+
   document.body.appendChild(toast);
-  
+
   setTimeout(() => {
     document.body.removeChild(toast);
   }, 1000);
@@ -237,7 +237,7 @@ async function saveEngines() {
   try {
     const engines = [];
     const items = document.querySelectorAll('.engine-item');
-    
+
     items.forEach(item => {
       const nameElement = item.querySelector('.engine-name');
       const urlInput = item.querySelector('.engine-url');
@@ -248,8 +248,8 @@ async function saveEngines() {
         throw new Error('Missing required elements');
       }
 
-      const name = nameElement.tagName.toLowerCase() === 'input' ? 
-        nameElement.value : 
+      const name = nameElement.tagName.toLowerCase() === 'input' ?
+        nameElement.value :
         nameElement.textContent;
 
       const url = urlInput.value;
@@ -265,7 +265,7 @@ async function saveEngines() {
     });
 
     await chrome.storage.sync.set({ engines });
-    
+
     // 使用 try-catch 包裹消息发送
     try {
       await chrome.runtime.sendMessage({ type: 'ENGINES_UPDATED' });
@@ -285,10 +285,10 @@ function initializeIntroSection() {
   const introHeader = document.getElementById('introHeader');
   const introContent = document.getElementById('introContent');
   const toggleIcon = introHeader.querySelector('.toggle-icon');
-  
+
   // 默认设置为收起状态
   toggleIcon.style.transform = 'rotate(-90deg)';
-  
+
   // 从存储中获取状态，但默认为 true（收起）
   chrome.storage.local.get('introCollapsed', (data) => {
     const isCollapsed = data.introCollapsed === undefined ? true : data.introCollapsed;
@@ -298,7 +298,7 @@ function initializeIntroSection() {
       toggleIcon.style.transform = '';
     }
   });
-  
+
   introHeader.addEventListener('click', () => {
     const isCollapsed = introContent.classList.toggle('collapsed');
     toggleIcon.style.transform = isCollapsed ? 'rotate(-90deg)' : '';
@@ -346,11 +346,11 @@ function initializeCollapsibles() {
   document.querySelectorAll('.collapsible').forEach(panel => {
     const header = panel.querySelector('.collapsible-header');
     const content = panel.querySelector('.collapsible-content');
-    
+
     if (header && content) {
       header.addEventListener('click', () => {
         panel.classList.toggle('active');
-        
+
         if (panel.classList.contains('active')) {
           content.style.maxHeight = content.scrollHeight + 'px';
         } else {
@@ -362,38 +362,50 @@ function initializeCollapsibles() {
 }
 
 // 添加介绍部分的展开/收起功能
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   console.log('DOM Content Loaded');
-  
+
   const introHeader = document.getElementById('introHeader');
   const introContent = document.getElementById('introContent');
-  
-  introHeader.addEventListener('click', function() {
+
+  introHeader.addEventListener('click', function () {
     introContent.classList.toggle('collapsed');
     const toggleIcon = introHeader.querySelector('.toggle-icon');
-    toggleIcon.style.transform = introContent.classList.contains('collapsed') 
-      ? 'rotate(-90deg)' 
+    toggleIcon.style.transform = introContent.classList.contains('collapsed')
+      ? 'rotate(-90deg)'
       : 'rotate(0deg)';
   });
 });
 
 // 在 DOMContentLoaded 时初始化应用
-document.addEventListener('DOMContentLoaded', initializeApp); 
+document.addEventListener('DOMContentLoaded', initializeApp);
+
+document.addEventListener('DOMContentLoaded', function () {
+  // 获取所有删除按钮
+  var deleteButtons = document.querySelectorAll('.delete-btn');
+
+  // 为每个按钮添加点击事件处理器
+  deleteButtons.forEach(function (button) {
+    button.addEventListener('click', function (event) {
+      // 获取要删除的元素，这里假设要删除的元素是按钮的父元素
+      var itemToDelete = button.parentElement;
+
+      // 从 DOM 中移除元素
+      itemToDelete.remove();
+
+      // 可以在这里添加其他逻辑，如更新存储、发送删除请求等
+    });
+  });
+});
 
 document.addEventListener('DOMContentLoaded', function() {
-    // 获取所有删除按钮
-    var deleteButtons = document.querySelectorAll('.delete-btn');
-    
-    // 为每个按钮添加点击事件处理器
-    deleteButtons.forEach(function(button) {
-        button.addEventListener('click', function(event) {
-            // 获取要删除的元素，这里假设要删除的元素是按钮的父元素
-            var itemToDelete = button.parentElement;
-            
-            // 从 DOM 中移除元素
-            itemToDelete.remove();
-            
-            // 可以在这里添加其他逻辑，如更新存储、发送删除请求等
+    var addEngineBtn = document.getElementById('addEngine');
+    if (addEngineBtn) {
+        addEngineBtn.addEventListener('click', function() {
+            console.log('添加引擎按钮被点击');
+            // 添加引擎的逻辑
         });
-    });
+    } else {
+        console.error('添加引擎按钮未找到');
+    }
 }); 
