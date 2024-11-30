@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <style>
-    body { 
-      width: 500px; 
+    body {
+      width: 500px;
       padding: 20px;
       font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
     }
+
     .header {
       background: #4a6cf7;
       color: white;
@@ -15,12 +17,14 @@
       border-radius: 8px;
       margin-bottom: 15px;
     }
+
     .engine-item {
       display: flex;
       gap: 8px;
       margin-bottom: 10px;
       align-items: center;
     }
+
     .engine-name {
       width: 100px !important;
       height: 32px !important;
@@ -30,6 +34,7 @@
       box-sizing: border-box !important;
       font-size: 14px !important;
     }
+
     .engine-name[readonly],
     div.engine-name {
       background: #f5f5f5 !important;
@@ -38,6 +43,7 @@
       text-overflow: ellipsis !important;
       white-space: nowrap !important;
     }
+
     .engine-url {
       flex: 1;
       height: 32px;
@@ -46,6 +52,7 @@
       border-radius: 4px;
       box-sizing: border-box;
     }
+
     .engine-timeout {
       width: 80px;
       height: 32px;
@@ -54,6 +61,7 @@
       border-radius: 4px;
       box-sizing: border-box;
     }
+
     .btn {
       height: 32px;
       padding: 0 15px;
@@ -61,11 +69,13 @@
       border-radius: 4px;
       cursor: pointer;
     }
+
     .btn-primary {
       background: #4a6cf7;
       color: white;
       margin-right: 10px;
     }
+
     .btn-danger {
       height: 32px;
       padding: 0 12px;
@@ -75,9 +85,11 @@
       color: white;
       cursor: pointer;
     }
+
     .btn-danger:hover {
       background: #c82333;
     }
+
     .guide-section {
       margin-top: 20px;
       padding: 15px;
@@ -85,29 +97,35 @@
       background: #f8f9fa;
       border-left: 4px solid #4a6cf7;
     }
+
     .guide-title {
       margin: 0 0 10px 0;
       font-weight: bold;
       color: #333;
     }
+
     .guide-content {
       margin: 0;
       padding-left: 20px;
     }
+
     .guide-content li {
       margin-bottom: 8px;
       line-height: 1.5;
     }
+
     .keyboard-shortcut {
       background: #eee;
       padding: 2px 6px;
       border-radius: 3px;
       font-family: monospace;
     }
+
     .config-guide {
       border-left-color: #ffc107;
       margin-top: 15px;
     }
+
     .intro-section {
       background: #e3f2fd;
       border-radius: 8px;
@@ -117,7 +135,7 @@
       font-size: 14px;
       line-height: 1.6;
     }
-    
+
     .intro-header {
       display: flex;
       justify-content: space-between;
@@ -125,7 +143,7 @@
       cursor: pointer;
       user-select: none;
     }
-    
+
     .intro-header h4 {
       margin: 0;
       color: #1565c0;
@@ -133,21 +151,21 @@
       align-items: center;
       gap: 8px;
     }
-    
+
     .toggle-icon {
       display: inline-block;
       transition: transform 0.3s ease;
       font-size: 12px;
       margin-left: 5px;
     }
-    
+
     .intro-content {
       overflow: hidden;
       transition: all 0.3s ease;
       opacity: 1;
       margin-top: 10px;
     }
-    
+
     .intro-content.collapsed {
       height: 0;
       opacity: 0;
@@ -155,24 +173,24 @@
       padding-top: 0;
       padding-bottom: 0;
     }
-    
+
     .intro-header:hover {
       opacity: 0.9;
     }
-    
+
     .collapsed .toggle-icon {
       transform: rotate(-90deg);
     }
-    
+
     .feature-list {
       margin: 10px 0 0 0;
       padding-left: 20px;
     }
-    
+
     .feature-list li {
       margin-bottom: 5px;
     }
-    
+
     .highlight {
       color: #1565c0;
       font-weight: 500;
@@ -204,6 +222,7 @@
         transform: translate(-50%, -20px);
         opacity: 0;
       }
+
       to {
         transform: translate(-50%, 0);
         opacity: 1;
@@ -214,6 +233,7 @@
       from {
         opacity: 1;
       }
+
       to {
         opacity: 0;
       }
@@ -258,11 +278,11 @@
       border-radius: 50%;
     }
 
-    input:checked + .slider {
+    input:checked+.slider {
       background-color: #2196F3;
     }
 
-    input:checked + .slider:before {
+    input:checked+.slider:before {
       transform: translateX(18px);
     }
 
@@ -372,37 +392,14 @@
     }
   </style>
 </head>
+
 <body>
   <div class="header">
     <h3>🔍 搜索引擎设置</h3>
   </div>
-  
-  <div class="intro-section">
-    <div class="intro-header" id="introHeader">
-      <h4>
-        插件介绍
-        <span class="toggle-icon">▼</span>
-      </h4>
-    </div>
-    <div class="intro-content collapsed" id="introContent">
-      <p>这是一个提高搜索效率的多搜索引擎工具。通过一次作，同时在多个搜索引擎中进行搜索，帮助你：</p>
-      <ul class="feature-list">
-        <li>在不同搜索引擎中<span class="highlight">对比搜索结果</span></li>
-        <li>快速获取<span class="highlight">多个搜索引擎的结果</span>，无需重复输入</li>
-        <li>适用于：
-          <ul>
-            <li>需要全面搜索资料的学习研究</li>
-            <li>需要对比多个搜索结果的工作场景</li>
-            <li>想要提高搜索效率的日常使用</li>
-          </ul>
-        </li>
-        <li>支持<span class="highlight">自定义搜索引擎</span>和超时设置</li>
-      </ul>
-    </div>
-  </div>
 
   <div id="engineList"></div>
-  
+
   <div style="margin: 15px 0;">
     <button id="addEngine" class="btn btn-primary">添加搜索引擎</button>
     <button id="saveEngines" class="btn btn-primary">保存设置</button>
@@ -438,4 +435,5 @@
   <script src="i18n.js"></script>
   <script src="popup.js"></script>
 </body>
-</html> 
+
+</html>
