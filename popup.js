@@ -379,3 +379,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 在 DOMContentLoaded 时初始化应用
 document.addEventListener('DOMContentLoaded', initializeApp); 
+
+document.addEventListener('DOMContentLoaded', function() {
+    // 获取所有删除按钮
+    var deleteButtons = document.querySelectorAll('.delete-btn');
+    
+    // 为每个按钮添加点击事件处理器
+    deleteButtons.forEach(function(button) {
+        button.addEventListener('click', function(event) {
+            // 获取要删除的元素，这里假设要删除的元素是按钮的父元素
+            var itemToDelete = button.parentElement;
+            
+            // 从 DOM 中移除元素
+            itemToDelete.remove();
+            
+            // 可以在这里添加其他逻辑，如更新存储、发送删除请求等
+        });
+    });
+}); 
