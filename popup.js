@@ -329,9 +329,9 @@ function getDefaultEngines() {
       enabled: true,
       isCustom: false
     },
-    'baidu': {
-      name: 'Baidu',
-      url: 'https://www.baidu.com/s?wd=%s',
+    'yahoo': {
+      name: 'Yahoo',
+      url: 'https://search.yahoo.com/search?p=%s',
       timeout: 10000,
       enabled: true,
       isCustom: false
