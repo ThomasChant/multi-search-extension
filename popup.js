@@ -23,7 +23,7 @@ async function initializeApp() {
     initializeEventListeners();
   } catch (error) {
     console.error('Initialization error:', error);
-    showToast('初始化失败', 'error');
+    showToast('Initialization failed', 'error');
   }
 }
 
@@ -46,7 +46,7 @@ function initializeEventListeners() {
   // 添加错处理
   if (!addEngineBtn || !saveEnginesBtn) {
     console.error('Required buttons not found');
-    showToast('初始化按钮失败', 'error');
+    showToast('Button initialization failed', 'error');
   }
 }
 
@@ -86,7 +86,7 @@ async function loadEngines() {
     }
   } catch (error) {
     console.error('Error loading engines:', error);
-    showToast('加载搜索引擎失败', 'error');
+    showToast('Failed to load search engines', 'error');
   }
 }
 
@@ -163,12 +163,18 @@ function addEngineInput(name = '', url = '', timeout = 10000, isCustom = false, 
     item.appendChild(urlInput);
     item.appendChild(timeoutInput);
     item.appendChild(createEnabledSwitch(enabled));
-    item.appendChild(createDeleteButton());
 
+    const deleteButton = createDeleteButton();
+    deleteButton.addEventListener('click', function () {
+      item.remove();
+      // 在这里添加更新存储的逻辑
+    });
+
+    item.appendChild(deleteButton);
     container.appendChild(item);
   } catch (error) {
     console.error('Error adding engine input:', error);
-    showToast('添加搜索引擎失败', 'error');
+    showToast('Failed to add search engine', 'error');
   }
 }
 
@@ -258,7 +264,7 @@ async function saveEngines() {
       const isCustom = nameElement.tagName.toLowerCase() === 'input';
 
       if (!name || !url) {
-        throw new Error('名称和URL不能为空');
+        throw new Error('Name and URL cannot be empty');
       }
 
       engines.push({ name, url, timeout, enabled, isCustom });
@@ -269,14 +275,14 @@ async function saveEngines() {
     // 使用 try-catch 包裹消息发送
     try {
       await chrome.runtime.sendMessage({ type: 'ENGINES_UPDATED' });
-      showToast('保存成功');
+      showToast('Settings saved successfully');
     } catch (messageError) {
-      console.error('发送消息失败:', messageError);
-      showToast('保存成功，但无法更新后台。请重新加载扩展。');
+      console.error('Failed to send message:', messageError);
+      showToast('Saved successfully, but failed to update background. Please reload extension.');
     }
   } catch (error) {
-    console.error('保存失败:', error);
-    showToast('保存失败: ' + error.message);
+    console.error('Save failed:', error);
+    showToast('Save failed: ' + error.message);
   }
 }
 
@@ -310,28 +316,28 @@ function initializeIntroSection() {
 function getDefaultEngines() {
   const defaultEngines = {
     'google': {
-      name: '谷歌',
+      name: 'Google',
       url: 'https://www.google.com/search?q=%s',
       timeout: 10000,
       enabled: true,
       isCustom: false
     },
     'baidu': {
-      name: '百度',
+      name: 'Baidu',
       url: 'https://www.baidu.com/s?wd=%s',
       timeout: 10000,
       enabled: true,
       isCustom: false
     },
     'bing': {
-      name: '必应',
+      name: 'Bing',
       url: 'https://www.bing.com/search?q=%s',
       timeout: 10000,
       enabled: true,
       isCustom: false
     },
     'sogou': {
-      name: '搜狗',
+      name: 'Sogou',
       url: 'https://www.sogou.com/web?query=%s',
       timeout: 10000,
       enabled: true,
@@ -402,10 +408,10 @@ document.addEventListener('DOMContentLoaded', function() {
     var addEngineBtn = document.getElementById('addEngine');
     if (addEngineBtn) {
         addEngineBtn.addEventListener('click', function() {
-            console.log('添加引擎按钮被点击');
-            // 添加引擎的逻辑
+            console.log('Add engine button clicked');
+            // Add engine logic
         });
     } else {
-        console.error('添加引擎按钮未找到');
+        console.error('Add engine button not found');
     }
 }); 
