@@ -14,7 +14,7 @@ async function initializeApp() {
     i18nInitialized = true;
 
     // 初始化折叠面板
-    initializeCollapsibles();
+    // initializeCollapsibles();
 
     // 加载搜索引擎
     await loadEngines();
@@ -286,31 +286,31 @@ async function saveEngines() {
   }
 }
 
-// 在文件开头添加
-function initializeIntroSection() {
-  const introHeader = document.getElementById('introHeader');
-  const introContent = document.getElementById('introContent');
-  const toggleIcon = introHeader.querySelector('.toggle-icon');
+// // 在文件开头添加
+// function initializeIntroSection() {
+//   const introHeader = document.getElementById('introHeader');
+//   const introContent = document.getElementById('introContent');
+//   const toggleIcon = introHeader.querySelector('.toggle-icon');
 
-  // 默认设置为收起状态
-  toggleIcon.style.transform = 'rotate(-90deg)';
+//   // 默认设置为收起状态
+//   toggleIcon.style.transform = 'rotate(-90deg)';
 
-  // 从存储中获取状态，但默认为 true（收起）
-  chrome.storage.local.get('introCollapsed', (data) => {
-    const isCollapsed = data.introCollapsed === undefined ? true : data.introCollapsed;
-    if (!isCollapsed) {
-      // 只明确设置为展开时才展开
-      introContent.classList.remove('collapsed');
-      toggleIcon.style.transform = '';
-    }
-  });
+//   // 从存储中获取状态，但默认为 true（收起）
+//   chrome.storage.local.get('introCollapsed', (data) => {
+//     const isCollapsed = data.introCollapsed === undefined ? true : data.introCollapsed;
+//     if (!isCollapsed) {
+//       // 只明确设置为展开时才展开
+//       introContent.classList.remove('collapsed');
+//       toggleIcon.style.transform = '';
+//     }
+//   });
 
-  introHeader.addEventListener('click', () => {
-    const isCollapsed = introContent.classList.toggle('collapsed');
-    toggleIcon.style.transform = isCollapsed ? 'rotate(-90deg)' : '';
-    chrome.storage.local.set({ introCollapsed: isCollapsed });
-  });
-}
+//   introHeader.addEventListener('click', () => {
+//     const isCollapsed = introContent.classList.toggle('collapsed');
+//     toggleIcon.style.transform = isCollapsed ? 'rotate(-90deg)' : '';
+//     chrome.storage.local.set({ introCollapsed: isCollapsed });
+//   });
+// }
 
 // 获取默认搜索引擎配置
 function getDefaultEngines() {
@@ -347,41 +347,41 @@ function getDefaultEngines() {
   return Object.values(defaultEngines);
 }
 
-// 初始化折叠面板
-function initializeCollapsibles() {
-  document.querySelectorAll('.collapsible').forEach(panel => {
-    const header = panel.querySelector('.collapsible-header');
-    const content = panel.querySelector('.collapsible-content');
+// // 初始化折叠面板
+// function initializeCollapsibles() {
+//   document.querySelectorAll('.collapsible').forEach(panel => {
+//     const header = panel.querySelector('.collapsible-header');
+//     const content = panel.querySelector('.collapsible-content');
 
-    if (header && content) {
-      header.addEventListener('click', () => {
-        panel.classList.toggle('active');
+//     if (header && content) {
+//       header.addEventListener('click', () => {
+//         panel.classList.toggle('active');
 
-        if (panel.classList.contains('active')) {
-          content.style.maxHeight = content.scrollHeight + 'px';
-        } else {
-          content.style.maxHeight = '0';
-        }
-      });
-    }
-  });
-}
+//         if (panel.classList.contains('active')) {
+//           content.style.maxHeight = content.scrollHeight + 'px';
+//         } else {
+//           content.style.maxHeight = '0';
+//         }
+//       });
+//     }
+//   });
+// }
 
-// 添加介绍部分的展开/收起功能
-document.addEventListener('DOMContentLoaded', function () {
-  console.log('DOM Content Loaded');
+// // 添加介绍部分的展开/收起功能
+// document.addEventListener('DOMContentLoaded', function () {
+//   console.log('DOM Content Loaded');
 
-  const introHeader = document.getElementById('introHeader');
-  const introContent = document.getElementById('introContent');
+//   const introHeader = document.getElementById('introHeader');
+//   const introContent = document.getElementById('introContent');
 
-  introHeader.addEventListener('click', function () {
-    introContent.classList.toggle('collapsed');
-    const toggleIcon = introHeader.querySelector('.toggle-icon');
-    toggleIcon.style.transform = introContent.classList.contains('collapsed')
-      ? 'rotate(-90deg)'
-      : 'rotate(0deg)';
-  });
-});
+//   introHeader.addEventListener('click', function () {
+//     introContent.classList.toggle('collapsed');
+//     const toggleIcon = introHeader.querySelector('.toggle-icon');
+//     toggleIcon.style.transform = introContent.classList.contains('collapsed')
+//       ? 'rotate(-90deg)'
+//       : 'rotate(0deg)';
+//   });
+// });
 
 // 在 DOMContentLoaded 时初始化应用
 document.addEventListener('DOMContentLoaded', initializeApp);

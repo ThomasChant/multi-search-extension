@@ -2,10 +2,10 @@
 async function loadEnginesConfig() {
   try {
     const result = await chrome.storage.sync.get('engines');
-    console.log('Loaded engines:', result.engines); // 调试日志
+    // console.log('Loaded engines:', result.engines); // 调试日志
     return result.engines || [];
   } catch (error) {
-    console.error('Error loading engines:', error);
+    // console.error('Error loading engines:', error);
     return [];
   }
 }
@@ -17,15 +17,15 @@ console.log('Background script loaded');
 chrome.omnibox.onInputEntered.addListener(async (text) => {
   try {
     const engines = await loadEnginesConfig();
-    console.log('All engines:', engines);
+    // console.log('All engines:', engines);
     
     const enabledEngines = engines.filter(engine => engine.enabled);
-    console.log('Enabled engines:', enabledEngines);
-    console.log('Search text:', text);
+    // console.log('Enabled engines:', enabledEngines);
+    // console.log('Search text:', text);
 
     for (const engine of enabledEngines) {
       const searchUrl = engine.url.replace('%s', encodeURIComponent(text));
-      console.log('Opening URL:', searchUrl, 'for engine:', engine.name);
+      // console.log('Opening URL:', searchUrl, 'for engine:', engine.name);
       
       try {
         await chrome.tabs.create({
