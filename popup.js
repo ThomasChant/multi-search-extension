@@ -322,13 +322,6 @@ function getDefaultEngines() {
       enabled: true,
       isCustom: false
     },
-    'baidu': {
-      name: 'Baidu',
-      url: 'https://www.baidu.com/s?wd=%s',
-      timeout: 10000,
-      enabled: true,
-      isCustom: false
-    },
     'bing': {
       name: 'Bing',
       url: 'https://www.bing.com/search?q=%s',
@@ -336,9 +329,9 @@ function getDefaultEngines() {
       enabled: true,
       isCustom: false
     },
-    'sogou': {
-      name: 'Sogou',
-      url: 'https://www.sogou.com/web?query=%s',
+    'baidu': {
+      name: 'Baidu',
+      url: 'https://www.baidu.com/s?wd=%s',
       timeout: 10000,
       enabled: true,
       isCustom: false
