@@ -1,9 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "__MSG_appName__",
+  "name": "Multi Search Engine",
   "version": "1.0",
-  "description": "__MSG_appDesc__",
-  "default_locale": "zh_CN",
+  "description": "Search with multiple search engines simultaneously",
   "permissions": [
     "storage",
     "tabs"
@@ -21,5 +20,6 @@
     "16": "images/icon16.png",
     "48": "images/icon48.png",
     "128": "images/icon128.png"
-  }
+  },
+  "default_locale": "en"
 } 
