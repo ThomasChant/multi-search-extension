@@ -4,8 +4,7 @@
   "version": "1.0",
   "description": "Search with multiple search engines simultaneously",
   "permissions": [
-    "storage",
-    "tabs"
+    "storage"
   ],
   "action": {
     "default_popup": "popup.html"
