@@ -1,4 +1,7 @@
-console.log('Popup script starting...');
+import { defaultEngines } from './common/defaultEngines.js';
+
+console.log('opup script starting...');
+console.log('defaultEngines:', defaultEngines);
 
 // 等待 DOM 和 i18n 加载完成
 let i18nInitialized = false;
@@ -66,6 +69,7 @@ async function loadEngines() {
 
     // 清空现有列表
     container.innerHTML = '';
+    console.log('engines from storage', engines);
 
     if (engines && engines.length > 0) {
       engines.forEach(engine => addEngineInput(
@@ -76,12 +80,12 @@ async function loadEngines() {
         engine.enabled !== false
       ));
     } else {
-      getDefaultEngines().forEach(engine => addEngineInput(
+      defaultEngines.forEach(engine => addEngineInput(
         engine.name,
         engine.url,
-        10000,
-        false,
-        true
+        engine.timeout,
+        engine.isCustom,
+        engine.enabled
       ));
     }
   } catch (error) {
@@ -311,70 +315,6 @@ async function saveEngines() {
 //     chrome.storage.local.set({ introCollapsed: isCollapsed });
 //   });
 // }
-
-// 获取默认搜索引擎配置
-function getDefaultEngines() {
-  const defaultEngines = {
-    'google': {
-      name: 'Google',
-      url: 'https://www.google.com/search?q=%s',
-      timeout: 10000,
-      enabled: true,
-      isCustom: false
-    },
-    'bing': {
-      name: 'Bing',
-      url: 'https://www.bing.com/search?q=%s',
-      timeout: 10000,
-      enabled: true,
-      isCustom: false
-    },
-    'yahoo': {
-      name: 'Yahoo',
-      url: 'https://search.yahoo.com/search?p=%s',
-      timeout: 10000,
-      enabled: true,
-      isCustom: false
-    }
-  };
-  return Object.values(defaultEngines);
-}
-
-// // 初始化折叠面板
-// function initializeCollapsibles() {
-//   document.querySelectorAll('.collapsible').forEach(panel => {
-//     const header = panel.querySelector('.collapsible-header');
-//     const content = panel.querySelector('.collapsible-content');
-
-//     if (header && content) {
-//       header.addEventListener('click', () => {
-//         panel.classList.toggle('active');
-
-//         if (panel.classList.contains('active')) {
-//           content.style.maxHeight = content.scrollHeight + 'px';
-//         } else {
-//           content.style.maxHeight = '0';
-//         }
-//       });
-//     }
-//   });
-// }
-
-// // 添加介绍部分的展开/收起功能
-// document.addEventListener('DOMContentLoaded', function () {
-//   console.log('DOM Content Loaded');
-
-//   const introHeader = document.getElementById('introHeader');
-//   const introContent = document.getElementById('introContent');
-
-//   introHeader.addEventListener('click', function () {
-//     introContent.classList.toggle('collapsed');
-//     const toggleIcon = introHeader.querySelector('.toggle-icon');
-//     toggleIcon.style.transform = introContent.classList.contains('collapsed')
-//       ? 'rotate(-90deg)'
-//       : 'rotate(0deg)';
-//   });
-// });
 
 // 在 DOMContentLoaded 时初始化应用
 document.addEventListener('DOMContentLoaded', initializeApp);

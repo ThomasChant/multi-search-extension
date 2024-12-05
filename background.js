@@ -1,11 +1,11 @@
+import { defaultEngines } from './common/defaultEngines.js';
+
 // 首先声明 loadEnginesConfig 函数
 async function loadEnginesConfig() {
   try {
     const result = await chrome.storage.sync.get('engines');
-    // console.log('Loaded engines:', result.engines); // 调试日志
     return result.engines || [];
   } catch (error) {
-    // console.error('Error loading engines:', error);
     return [];
   }
 }
@@ -13,19 +13,34 @@ async function loadEnginesConfig() {
 // 添加初始化日志
 console.log('Background script loaded');
 
+// 从 popup.js 复制 loadEngines 方法
+async function loadEngines() {
+  try {
+    const { engines } = await chrome.storage.sync.get('engines');
+    console.log('engines from storage', engines);
+
+    if (engines && engines.length > 0) {
+      return engines;
+    } else {
+      return defaultEngines;
+    }
+  } catch (error) {
+    console.error('Error loading engines:', error);
+    return [];
+  }
+}
+
 // 处理搜索请求
 chrome.omnibox.onInputEntered.addListener(async (text) => {
   try {
-    const engines = await loadEnginesConfig();
-    // console.log('All engines:', engines);
+    const engines = await loadEngines();
+    console.log('All engines:', engines);
     
     const enabledEngines = engines.filter(engine => engine.enabled);
-    // console.log('Enabled engines:', enabledEngines);
-    // console.log('Search text:', text);
+    console.log('Enabled engines:', enabledEngines);
 
     for (const engine of enabledEngines) {
       const searchUrl = engine.url.replace('%s', encodeURIComponent(text));
-      // console.log('Opening URL:', searchUrl, 'for engine:', engine.name);
       
       try {
         await chrome.tabs.create({
