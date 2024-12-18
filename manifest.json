@@ -21,9 +21,5 @@
     "48": "images/icon48.png",
     "128": "images/icon128.png"
   },
-  "default_locale": "en",
-  "web_accessible_resources": [{
-    "resources": ["common/*"],
-    "matches": ["<all_urls>"]
-  }]
+  "default_locale": "en"
 } 
